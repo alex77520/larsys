@@ -74,7 +74,7 @@
     <div class="container">
         <div class="row">
             <div class="dropdown btn-group">
-                @foreach($admin_menus as $admin_menu)
+                @foreach(unserialize(\Illuminate\Support\Facades\Redis::get('admin_menus_' . Auth::guard('admin')->user()->id)) as $admin_menu)
                 <div class="btn-group" role="group">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{ $admin_menu['name'] }}

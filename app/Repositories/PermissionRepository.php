@@ -6,6 +6,7 @@ use App\Permission;
 use App\Role;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 class PermissionRepository
 {
@@ -16,10 +17,14 @@ class PermissionRepository
     {
         $user = Auth::guard('admin')->user();
 
-        $this->pubAllMenusOrPartMenus($user);
+        $menu_name = 'admin_menus_' . $user->id;
+
+        if (! Redis::exists($menu_name)) {
+            $this->cacheAllMenusOrPartMenus($user, $menu_name);
+        }
     }
 
-    public function pubAllMenusOrPartMenus($user)
+    public function cacheAllMenusOrPartMenus($user, $menu_name)
     {
         $admin_menus = $user->is_admin === 1
             ? $this->getAllMenus()
@@ -28,7 +33,7 @@ class PermissionRepository
         // buildTree->App/Helpers/helpers.php
         $admin_menus = buildTree($admin_menus);
 
-        view()->share('admin_menus', $admin_menus);
+        Redis::set($menu_name, serialize($admin_menus));
     }
 
     /**
