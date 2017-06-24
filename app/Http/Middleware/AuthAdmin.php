@@ -23,6 +23,9 @@ class AuthAdmin
             }
         }
 
+        // 加入防止伪造url登录的验证规则
+        // going on...
+
         return $next($request);
     }
 }

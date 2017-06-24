@@ -11,29 +11,33 @@ use Illuminate\Support\Facades\Redis;
 class PermissionRepository
 {
 
-    public static $permissionUris = [];
-
     public function initMenus()
     {
         $user = Auth::guard('admin')->user();
 
+        // 缓存中保存菜单和uris的键名
         $menu_name = 'admin_menus_' . $user->id;
+        $uri_name = 'admin_uris_' . $user->id;
 
-        if (! Redis::exists($menu_name)) {
-            $this->cacheAllMenusOrPartMenus($user, $menu_name);
-        }
+        // if (！ Redis::exists($menu_name)) 不需要每次登录都刷新就引入改行
+        $this->cacheAllMenusOrPartMenus($user, $menu_name, $uri_name);
+
     }
 
-    public function cacheAllMenusOrPartMenus($user, $menu_name)
+    public function cacheAllMenusOrPartMenus($user, $menu_name, $uri_name)
     {
         $admin_menus = $user->is_admin === 1
             ? $this->getAllMenus()
             : $this->getPermissionMenus($user);
 
+        // 只获得有权限的uri
+        $admin_uris = $this->setPermissionUris($user);
+
         // buildTree->App/Helpers/helpers.php
         $admin_menus = buildTree($admin_menus);
 
         Redis::set($menu_name, serialize($admin_menus));
+        Redis::set($uri_name, serialize($admin_uris));
     }
 
     /**
@@ -54,26 +58,44 @@ class PermissionRepository
     /**
      * 获取有权限的栏目
      *
+     * ###
+     *
      * @param $user
      * @return array
      */
     public function getPermissionMenus($user)
     {
-        $user_roles = User::find($user->id)->roles()->get();
+        $user_roles = $this->findRolesBy($user->id);
 
         $user_permissions = [];
         foreach ($user_roles as $role) {
-            $role_permissions = Role::find($role->id)->permissions()->where('is_menu', 1)->get()->toArray();
-
-            $user_permissions = $user_permissions + $role_permissions;
+            $role_permissions = $this->findPermissionsBy($role['id']);
+            foreach ($role_permissions as $permission) {
+                // （关键）把pivot关联数组信息去除，
+                // 原因是该项的存在使得数组的每个键值都变得唯一而达不到去重目的
+                unset($permission['pivot']);
+                if (in_array($permission, $user_permissions)) continue;
+                array_push($user_permissions, $permission);
+            }
         }
 
-        return $user_permissions;
+        return  $user_permissions;
     }
 
-    public function setPermissionUris()
+    public function setPermissionUris($user)
     {
+        $roles = $this->findRolesBy($user->id);
 
+        $permission_uris = [];
+        foreach ($roles as $role) {
+            $permissions = $this->findPermissionsBy($role['id'], false);
+            foreach ($permissions as $permission) {
+                if (in_array($permission['uri'], $permission_uris) || $permission['uri'] == '') continue;
+                $permission_uris[] = $permission['uri'];
+            }
+        }
+
+        return $permission_uris;
     }
 
     /**
@@ -93,5 +115,21 @@ class PermissionRepository
         }
 
         return $bread;
+    }
+
+    public function findRolesBy($user_id)
+    {
+        return $user_roles = User::find($user_id)->roles()->get()->toArray();
+    }
+
+    public function findPermissionsBy($role_id, $is_menu = true)
+    {
+        if ($is_menu === true) {
+            $role_permissions = Role::find($role_id)->permissions()->where('is_menu', 1)->get()->toArray();
+        } else {
+            $role_permissions = Role::find($role_id)->permissions()->get()->toArray();
+        }
+
+        return $role_permissions;
     }
 }

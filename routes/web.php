@@ -23,15 +23,16 @@ Route::get('/home', 'HomeController@index')->name('home');
  * 后台登录路由组
  */
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
+    // 需要判断是否登录的路由
     Route::group(['middleware' => 'auth.admin'], function () {
         Route::get('/', 'IndexController@index');
+        Route::get('/article', 'ArticleController@index');
     });
 
     Route::get('/login', 'LoginController@showLoginForm')->name('admin.login');
     Route::post('/login', 'LoginController@login');
     Route::post('/logout', 'LoginController@logout');
 
-    Route::get('/article', 'ArticleController@index');
 });
 
 
