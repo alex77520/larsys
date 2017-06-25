@@ -19,19 +19,20 @@ class PermissionRepository
         $menu_name = 'admin_menus_' . $user->id;
         $uri_name = 'admin_uris_' . $user->id;
 
-        // if (！ Redis::exists($menu_name)) 不需要每次登录都刷新就引入改行
+        // if (！ Redis::exists($menu_name)) 不需要每次登录都刷新就引入改行,测试阶段注释
         $this->cacheAllMenusOrPartMenus($user, $menu_name, $uri_name);
 
     }
 
     public function cacheAllMenusOrPartMenus($user, $menu_name, $uri_name)
     {
-        $admin_menus = $user->is_admin === 1
-            ? $this->getAllMenus()
-            : $this->getPermissionMenus($user);
-
-        // 只获得有权限的uri
-        $admin_uris = $this->setPermissionUris($user);
+        if ($user->is_admin === 1) {
+            $admin_menus = $this->getAllMenus();
+            $admin_uris = $this->getAllUris();
+        } else {
+            $admin_menus = $this->getPermissionMenus($user);
+            $admin_uris = $this->getPermissionUris($user);
+        }
 
         // buildTree->App/Helpers/helpers.php
         $admin_menus = buildTree($admin_menus);
@@ -53,6 +54,16 @@ class PermissionRepository
             ->toArray();
 
         return $admin_menus;
+    }
+
+    public function getAllUris()
+    {
+        $admin_permissions = Permission::where('uri', '!=', '')
+            ->select('uri')
+            ->get()
+            ->toArray();
+
+        return $admin_permissions;
     }
 
     /**
@@ -82,7 +93,7 @@ class PermissionRepository
         return  $user_permissions;
     }
 
-    public function setPermissionUris($user)
+    public function getPermissionUris($user)
     {
         $roles = $this->findRolesBy($user->id);
 

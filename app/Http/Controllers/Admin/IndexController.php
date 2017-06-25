@@ -17,8 +17,6 @@ class IndexController extends BaseController
 
     public function index()
     {
-        $this->permission->initMenus();
-
         return view('admin.index');
     }
 }
