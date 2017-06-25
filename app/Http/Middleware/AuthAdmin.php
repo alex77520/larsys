@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Repositories\PermissionRepository;
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 
 class AuthAdmin
@@ -35,9 +36,9 @@ class AuthAdmin
         // 加入防止伪造url登录的验证规则
         // going on...
         $this->permission->initMenus();
-
+        $user_id = Auth::guard('admin')->user()->id;
         $uri = $_SERVER['REQUEST_URI'];
-        if (! in_array($uri, unserialize(Redis::get('admin_uris_2')))) return response('Unauthorized.', 401);
+        if (! in_array($uri, unserialize(Redis::get('admin_uris_' . $user_id)))) return response('Unauthorized.', 401);
 
         return $next($request);
     }
