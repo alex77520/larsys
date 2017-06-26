@@ -5,16 +5,16 @@
         <div class="row">
             <div class="panel">
                 <div class="panel-heading">
-                    <h4>创建角色</h4>
+                    <h4>编辑角色</h4>
                 </div>
                 <div class="panel-body">
-                    <form class="form-horizontal" method="post" action="{{ url('/admin/role/doAdd') }}">
+                    <form class="form-horizontal" method="post" action="{{ url('/admin/role/doEdit/'.$role->id) }}">
                         {{ csrf_field() }}
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">角色名称</label>
+                            <label for="name" class="col-sm-2 control-label">用户名称</label>
                             <div class="col-sm-8">
                                 <input name="name" type="text" class="form-control" id="name"
-                                       value="{{ old('name') ? old('name') : '' }}" placeholder="请输入名称" required>
+                                       value="{{ old('name') ? old('name') : $role->name }}" placeholder="请输入名称" required>
                             </div>
                             @if ($errors->has('name'))
                                 <span class="help-block">

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\AdminRoleRequest;
 use App\Permission;
 use App\Repositories\RoleRepository;
-use App\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -27,6 +27,42 @@ class RoleController extends Controller
     public function add()
     {
         return view('admin.addRole');
+    }
+
+    public function edit($role_id)
+    {
+        $role = $this->role_repository->findRoleBy($role_id);
+
+        return view('admin.editRole', compact('role'));
+    }
+
+    public function del($role_id)
+    {
+        if ($this->role_repository->destroyRoleBy($role_id)) {
+            flash('删除角色成功！')->success();
+            return redirect('/admin/role');
+        }
+    }
+
+    public function doAdd(AdminRoleRequest $request)
+    {
+        $data = $request->all();
+
+        if ($this->role_repository->createRole($data)) {
+            flash('创建角色成功！')->success();
+            return redirect('/admin/role');
+        }
+    }
+
+    public function doEdit(AdminRoleRequest $request, $role_id)
+    {
+        $role = $this->role_repository->findRoleBy($role_id);
+
+        $role->name = $request->input('name');
+
+        if ($role->save())
+            flash('编辑成功！')->success();
+            return redirect('/admin/role');
     }
 
     public function getPermissions($role_id)
@@ -64,6 +100,7 @@ class RoleController extends Controller
             }
         }
 
+        flash('权限分配成功！')->success();
         return redirect('/admin/role');
     }
 }

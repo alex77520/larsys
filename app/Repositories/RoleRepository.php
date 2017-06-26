@@ -6,6 +6,21 @@ use App\Role;
 
 class RoleRepository
 {
+    public function findRoleBy($role_id)
+    {
+        return Role::find($role_id);
+    }
+
+    public function destroyRoleBy($role_id)
+    {
+        return Role::destroy($role_id);
+    }
+
+    public function createRole(array $data)
+    {
+        return Role::create($data);
+    }
+
     public function getAllRoles($page)
     {
         return $roles = Role::orderBy('created_at')->paginate($page);
