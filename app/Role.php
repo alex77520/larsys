@@ -14,11 +14,11 @@ class Role extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'admin_user_role', 'role_id', 'user_id');
+        return $this->belongsToMany(User::class, 'admin_user_role', 'role_id', 'user_id')->withTimestamps();
     }
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'admin_role_permission', 'role_id', 'permission_id');
+        return $this->belongsToMany(Permission::class, 'admin_role_permission', 'role_id', 'permission_id')->withTimestamps();
     }
 }

@@ -33,12 +33,15 @@ class AuthAdmin
             }
         }
 
-        // 加入防止伪造url登录的验证规则
-        // going on...
         $this->permission->initMenus();
+
+        // 加入防止伪造url登录的验证规则
         $user_id = Auth::guard('admin')->user()->id;
-        $uri = $_SERVER['REQUEST_URI'];
-        if (! in_array($uri, unserialize(Redis::get('admin_uris_' . $user_id)))) return response('Unauthorized.', 401);
+
+        $uri = preg_replace('/(((\?)(\w|=)+)|(\/\d))/', '',$_SERVER['REQUEST_URI']);
+
+        if (! in_array($uri, unserialize(Redis::get('mysys_admin_uris_' . $user_id))))
+            return abort('401');
 
         return $next($request);
     }

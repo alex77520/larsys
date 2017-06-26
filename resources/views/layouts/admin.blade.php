@@ -12,6 +12,10 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/zTreeStyle.css') }}">
+    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
 </head>
 <body>
 <div id="app">
@@ -71,10 +75,10 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container" style="margin-bottom: 10px;">
         <div class="row">
             <div class="dropdown btn-group">
-                @foreach(unserialize(\Illuminate\Support\Facades\Redis::get('admin_menus_' . Auth::guard('admin')->user()->id)) as $admin_menu)
+                @foreach(unserialize(\Illuminate\Support\Facades\Redis::get('mysys_admin_menus_' . Auth::guard('admin')->user()->id)) as $admin_menu)
                 <div class="btn-group" role="group">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{ $admin_menu['name'] }}
@@ -95,10 +99,13 @@
 </div>
 
 <!-- Scripts -->
+{{--jquery在上面--}}
 <script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+<script src="{{ asset('js/select2.min.js') }}"></script>
+<script src="{{ asset('js/jquery.ztree.core.js') }}"></script>
+<script src="{{ asset('js/jquery.ztree.excheck.js') }}"></script>
+<script src="{{ asset('js/layer.js') }}"></script>
 <script src="{{ asset('js/admin.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 
 </body>
 </html>

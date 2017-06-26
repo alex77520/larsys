@@ -16,8 +16,8 @@ class PermissionRepository
         $user = Auth::guard('admin')->user();
 
         // 缓存中保存菜单和uris的键名
-        $menu_name = 'admin_menus_' . $user->id;
-        $uri_name = 'admin_uris_' . $user->id;
+        $menu_name = 'mysys_admin_menus_' . $user->id;
+        $uri_name = 'mysys_admin_uris_' . $user->id;
 
         // if (！ Redis::exists($menu_name)) 不需要每次登录都刷新就引入改行,测试阶段注释
         $this->cacheAllMenusOrPartMenus($user, $menu_name, $uri_name);
@@ -63,7 +63,13 @@ class PermissionRepository
             ->get()
             ->toArray();
 
-        return $admin_permissions;
+        // 确保与getPermissionUris方法返回的数据格式一致
+        $fresh_permissions = [];
+        foreach($admin_permissions as $permission) {
+            $fresh_permissions[] = $permission['uri'];
+        }
+
+        return $fresh_permissions;
     }
 
     /**
