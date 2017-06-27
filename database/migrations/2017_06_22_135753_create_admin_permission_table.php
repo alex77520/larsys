@@ -18,7 +18,8 @@ class CreateAdminPermissionTable extends Migration
             $table->string('name', 20);
             $table->string('uri')->nullable();
             $table->tinyInteger('status')->default(1);
-            $table->tinyInteger('is_menu')->default(1);
+            $table->tinyInteger('is_menu')->default(0);
+            $table->integer('pid')->default(0);
             $table->timestamps();
         });
     }

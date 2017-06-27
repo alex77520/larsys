@@ -54,11 +54,11 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="roles" class="col-sm-2 control-label">最高权限</label>
+                            <label for="is_admin" class="col-sm-2 control-label">最高权限</label>
                             <div class="col-sm-8">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="is_admin" value="1"
+                                        <input type="checkbox" name="is_admin" value="1" id="is_admin"
                                                 {{ old('is_admin') ? 'checked' : '' }}> 给予
                                         <small>（系统管理员拥有最高权力，选择该项则不必再为用户分配其他角色）</small>
                                     </label>

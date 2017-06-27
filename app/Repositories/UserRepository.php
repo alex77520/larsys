@@ -4,9 +4,22 @@ namespace App\Repositories;
 
 use App\Admin;
 use App\Role;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class UserRepository
 {
+    public function delUserCacheBy($user_id)
+    {
+        Redis::del(env('ADMIN_MENUS_PREFIX') . $user_id);
+        Redis::del(env('ADMIN_URIS_PREFIX') . $user_id);
+    }
+
+    public function delUserRoleRelationsBy($user_id)
+    {
+        DB::table('admin_user_role')->where('user_id', '=', $user_id)->delete();
+    }
+
     public function findUserBy($user_id)
     {
         return $user = Admin::find($user_id);
@@ -50,6 +63,35 @@ class UserRepository
 
     public function allotRolesFor($user, $roles)
     {
-        $user->roles()->attach($roles);
+        $user_roles = Admin::find($user->id)->roles()->select('role_id')->get();
+        $roles_now = [];
+
+        foreach ($user_roles as $role) {
+            $roles_now[] = $role->role_id;
+        }
+
+        $roles_now_count = count($roles_now);
+        $roles_request_connt = count($roles);
+
+        if ($roles_now_count > $roles_request_connt) {
+            $useless_roles = [];
+            foreach ($roles_now as $item) {
+                if (!in_array($item, $roles)) {
+                    $useless_roles[] = $item;
+                }
+            }
+            DB::table('admin_user_role')
+                ->where('user_id', '=', $user->id)
+                ->whereIn('role_id', $useless_roles)
+                ->delete();
+        } else if ($roles_now_count < $roles_request_connt) {
+            foreach ($roles as $item) {
+                if (! in_array($item, $roles_now)) {
+                    $user->roles()->attach($item);
+                }
+            }
+        }
+
+        $this->delUserCacheBy($user->id);
     }
 }

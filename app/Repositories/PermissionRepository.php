@@ -11,15 +11,30 @@ use Illuminate\Support\Facades\Redis;
 class PermissionRepository
 {
 
+    public function findPermission($permission_id)
+    {
+        return Permission::where('status', 1)->find($permission_id);
+    }
+
+    public function createPermission($data)
+    {
+        return Permission::create($data);
+    }
+
+    public function destroyPermissionBy($permission_id)
+    {
+        return Permission::destroy($permission_id);
+    }
+
     public function initMenus()
     {
         $user = Auth::guard('admin')->user();
 
         // 缓存中保存菜单和uris的键名
-        $menu_name = 'mysys_admin_menus_' . $user->id;
-        $uri_name = 'mysys_admin_uris_' . $user->id;
+        $menu_name = env('ADMIN_MENUS_PREFIX') . $user->id;
+        $uri_name = env('ADMIN_URIS_PREFIX') . $user->id;
 
-        // if (！ Redis::exists($menu_name)) 不需要每次登录都刷新就引入改行,测试阶段注释
+        if ((! Redis::exists($menu_name)) || ($user->is_admin == 1))
         $this->cacheAllMenusOrPartMenus($user, $menu_name, $uri_name);
 
     }
@@ -148,5 +163,43 @@ class PermissionRepository
         }
 
         return $role_permissions;
+    }
+
+    public function getAllPermissions($page = 5, $returnArray = false)
+    {
+        if ($page === 0) {
+            if ($returnArray === false) {
+                $permissions = Permission::where('status', 1)->orderBy('created_at')->get();
+            } else {
+                $permissions = Permission::where('status', 1)->orderBy('created_at')->get()->toArray();
+            }
+        }
+
+        if ($returnArray === false) {
+            $permissions = Permission::where('status', 1)->orderBy('created_at')->paginate($page);
+        }
+
+        return $permissions;
+    }
+
+    public function buildOptionStr($permissions, $selected_id = '', $separation = '', $repeat_num = 1)
+    {
+        $options = '';
+        $repeat_num = $repeat_num * 2;
+
+        foreach ($permissions as $permission) {
+
+            $options .= '<option value="'. $permission['id'] .'"';
+            if ($permission['id'] == $selected_id) $options .= 'selected';
+
+            $options .= '>'. str_repeat($separation, $repeat_num) . $permission['name'] .'</option>';
+
+            if ($permission['sub_menu'] != '') {
+
+                $options .= $this->buildOptionStr($permission['sub_menu'], '', '—', $repeat_num);
+            }
+        }
+
+        return $options;
     }
 }

@@ -10,7 +10,7 @@ class Permission extends Model
 
     protected $primaryKey = 'id';
 
-    protected $fillable = ['name', 'uri', 'status', 'is_menu'];
+    protected $fillable = ['name', 'uri', 'status', 'is_menu', 'pid'];
 
     public function roles()
     {

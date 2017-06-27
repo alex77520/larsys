@@ -71,23 +71,25 @@
                     '</div><form class="allotForm" action="/admin/role/allot/'+ role +'" method="post">{{ csrf_field() }}<div id="hiddenBox"></div></form></div>'
                 });
 
-                function zTreeOnCheck(event, treeId, treeNode) {
-                    if (treeNode.isParent) {
-                        $.each(treeNode.children, function (index, value) {
-                            if (treeNode.checked) {
-                                appendHidden(value.id);
-                            } else {
-                                removeHidden(value.id);
-                            }
-                        });
-                    } else {
-                        if (treeNode.checked) {
-                            appendHidden(treeNode.id);
-                        } else {
-                            removeHidden(treeNode.id);
-                        }
-                    }
+                function zTreeOnCheck() {
+                    var nodes = zTreeObj.getNodes();
+                    $("#hiddenBox").html('');
+                    checkNodes(nodes);
                 };
+
+                function checkNodes(nodes) {
+                    $.each(nodes, function (index, value) {
+                        if (value.checked) {
+                            appendHidden(value.id);
+                        } else {
+                            removeHidden(value.id);
+                        }
+
+                        if(value.isParent == true) {
+                            checkNodes(value.children);
+                        }
+                    })
+                }
 
                 function appendHidden(id) {
                     var hiddenString = '<input type="hidden" name="permissions[]" value="' + id + '">';

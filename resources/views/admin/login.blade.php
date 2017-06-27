@@ -12,6 +12,17 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            borrder: none;
+            -webkit-text-fill-color: #000; // 自定义字体的颜色
+        -webkit-box-shadow: 0 0 0px 1000px #fff inset;// 背景色
+        transition: background-color 5000s ease-in-out 0s;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
 
@@ -81,7 +92,5 @@
     </div>
     <script src="//code.jquery.com/jquery.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-
 
 </body>

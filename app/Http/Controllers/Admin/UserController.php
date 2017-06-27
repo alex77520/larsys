@@ -69,7 +69,7 @@ class UserController extends Controller
         $user->is_admin = $request->exists('is_admin') ? $request->input('is_admin') : 0;
         $user->save();
 
-        if ((!$request->exists('is_admin')) && ($request->exists('roles'))) {
+        if ((! $request->exists('is_admin')) && ($request->exists('roles'))) {
             $roles = $request->input('roles');
 
             $this->user_repository->allotRolesFor($user, $roles);
@@ -82,8 +82,13 @@ class UserController extends Controller
     {
         $user = $this->user_repository->findUserBy($user_id);
 
-        if ($user->delete())
-            return redirect('/admin/user');
+        if ($user->delete()) {
+            flash('删除用户成功！')->success();
+            $this->user_repository->delUserRoleRelationsBy($user_id);
+            $this->user_repository->delUserCacheBy($user_id);
+        }
+
+        return redirect('/admin/user');
     }
 
     public function frozen($user_id)
