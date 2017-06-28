@@ -46,7 +46,7 @@ class PermissionRepository
         $menu_name = 'menus_' . $user->id;
         $uri_name = 'uris_' . $user->id;
 
-        if ($this->cache->hashFieldExist(env('REDIS_ADMIN_HASH_KEY'), $menu_name) == false)
+        if (! $this->cache->hashFieldExist(env('REDIS_ADMIN_HASH_KEY'), $menu_name))
         $this->cacheAllMenusOrPartMenus($user, $menu_name, $uri_name);
     }
 

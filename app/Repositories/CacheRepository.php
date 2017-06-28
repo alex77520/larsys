@@ -30,4 +30,9 @@ class CacheRepository
     {
         return Redis::hexists($key, $field);
     }
+
+    public function keyExist($key)
+    {
+        return Redis::exists($key);
+    }
 }

@@ -78,7 +78,7 @@
     <div class="container" style="margin-bottom: 10px;">
         <div class="row">
             <div class="dropdown btn-group">
-                @foreach(unserialize(\Illuminate\Support\Facades\Redis::get('mysys_admin_menus_' . Auth::guard('admin')->user()->id)) as $admin_menu)
+                @foreach(unserialize(\Illuminate\Support\Facades\Redis::hget(env('REDIS_ADMIN_HASH_KEY'), 'menus_' . Auth::guard('admin')->user()->id)) as $admin_menu)
                 <div class="btn-group" role="group">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{ $admin_menu['name'] }}
@@ -86,7 +86,7 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         @foreach($admin_menu['sub_menu'] as $sub_menu)
-                            <li><a href="{{ url($sub_menu['uri']) }}">{{ $sub_menu['name'] }}</a></li>
+                            <li><a href="{{ $sub_menu['uri'] }}">{{ $sub_menu['name'] }}</a></li>
                         @endforeach
                     </ul>
                 </div>
