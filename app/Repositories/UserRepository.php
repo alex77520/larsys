@@ -5,14 +5,14 @@ namespace App\Repositories;
 use App\Admin;
 use App\Role;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 
 class UserRepository
 {
-    public function delUserCacheBy($user_id)
+    protected $cache;
+
+    public function __construct(CacheRepository $cacheRepository)
     {
-        Redis::del(env('ADMIN_MENUS_PREFIX') . $user_id);
-        Redis::del(env('ADMIN_URIS_PREFIX') . $user_id);
+        $this->cache = $cacheRepository;
     }
 
     public function delUserRoleRelationsBy($user_id)
@@ -71,9 +71,9 @@ class UserRepository
         }
 
         $roles_now_count = count($roles_now);
-        $roles_request_connt = count($roles);
+        $roles_request_count = count($roles);
 
-        if ($roles_now_count > $roles_request_connt) {
+        if ($roles_now_count > $roles_request_count) {
             $useless_roles = [];
             foreach ($roles_now as $item) {
                 if (!in_array($item, $roles)) {
@@ -84,7 +84,7 @@ class UserRepository
                 ->where('user_id', '=', $user->id)
                 ->whereIn('role_id', $useless_roles)
                 ->delete();
-        } else if ($roles_now_count < $roles_request_connt) {
+        } else if ($roles_now_count < $roles_request_count) {
             foreach ($roles as $item) {
                 if (! in_array($item, $roles_now)) {
                     $user->roles()->attach($item);
@@ -92,6 +92,6 @@ class UserRepository
             }
         }
 
-        $this->delUserCacheBy($user->id);
+        $this->cache->removeCacheBy($user->id);
     }
 }

@@ -6,10 +6,16 @@ use App\Permission;
 use App\Role;
 use App\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\DB;
 
 class PermissionRepository
 {
+    protected $cache;
+
+    public function __construct(CacheRepository $cacheRepository)
+    {
+        $this->cache = $cacheRepository;
+    }
 
     public function findPermission($permission_id)
     {
@@ -18,11 +24,17 @@ class PermissionRepository
 
     public function createPermission($data)
     {
+        $this->cache->removeAllCache();
+
         return Permission::create($data);
     }
 
     public function destroyPermissionBy($permission_id)
     {
+        $this->delRolePermissionRelationsBy($permission_id);
+
+        $this->cache->removeAllCache();
+
         return Permission::destroy($permission_id);
     }
 
@@ -31,12 +43,11 @@ class PermissionRepository
         $user = Auth::guard('admin')->user();
 
         // 缓存中保存菜单和uris的键名
-        $menu_name = env('ADMIN_MENUS_PREFIX') . $user->id;
-        $uri_name = env('ADMIN_URIS_PREFIX') . $user->id;
+        $menu_name = 'menus_' . $user->id;
+        $uri_name = 'uris_' . $user->id;
 
-        if ((! Redis::exists($menu_name)) || ($user->is_admin == 1))
+        if ($this->cache->hashFieldExist(env('REDIS_ADMIN_HASH_KEY'), $menu_name) == false)
         $this->cacheAllMenusOrPartMenus($user, $menu_name, $uri_name);
-
     }
 
     public function cacheAllMenusOrPartMenus($user, $menu_name, $uri_name)
@@ -52,8 +63,8 @@ class PermissionRepository
         // buildTree->App/Helpers/helpers.php
         $admin_menus = buildTree($admin_menus);
 
-        Redis::set($menu_name, serialize($admin_menus));
-        Redis::set($uri_name, serialize($admin_uris));
+        $this->cache->hashSet(env('REDIS_ADMIN_HASH_KEY'), $menu_name, serialize($admin_menus));
+        $this->cache->hashSet(env('REDIS_ADMIN_HASH_KEY'), $uri_name, serialize($admin_uris));
     }
 
     /**
@@ -85,6 +96,16 @@ class PermissionRepository
         }
 
         return $fresh_permissions;
+    }
+
+    /**
+     * 删除关联表中role和permission之间的联系
+     *
+     * @param $permission_id
+     */
+    public function delRolePermissionRelationsBy($permission_id)
+    {
+        DB::table('admin_role_permission')->where('permission_id', '=', $permission_id)->delete();
     }
 
     /**

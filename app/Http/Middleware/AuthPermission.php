@@ -5,15 +5,17 @@ namespace App\Http\Middleware;
 use App\Repositories\PermissionRepository;
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redis;
+use App\Repositories\CacheRepository;
 
 class AuthPermission
 {
     protected $permission;
+    protected $cache;
 
-    public function __construct(PermissionRepository $permissionRepository)
+    public function __construct(PermissionRepository $permissionRepository, CacheRepository $cacheRepository)
     {
         $this->permission = $permissionRepository;
+        $this->cache = $cacheRepository;
     }
 
     /**
@@ -32,7 +34,7 @@ class AuthPermission
 
         $uri = preg_replace('/(((\?)(\w|=)+)|(\/\d+))/', '', $_SERVER['REQUEST_URI']);
 
-        if (! in_array($uri, unserialize(Redis::get(env('ADMIN_URIS_PREFIX') . $user_id))))
+        if (! in_array($uri, unserialize($this->cache->hashGet(env('REDIS_ADMIN_HASH_KEY'), 'uris_' . $user_id))))
             return abort('401');
 
         return $next($request);

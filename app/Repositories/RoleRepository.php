@@ -5,24 +5,15 @@ namespace App\Repositories;
 use App\Permission;
 use App\Role;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 
 class RoleRepository
 {
 
-    /**
-     * 通过role_id删除关于该角色的用户的缓存信息
-     *
-     * @param $role_id
-     */
-    public function delUsersCacheBy($role_id)
-    {
-        $users = Role::find($role_id)->users()->select('user_id')->get();
+    protected $cache;
 
-        foreach ($users as $user) {
-            Redis::del(env('ADMIN_MENUS_PREFIX') . $user->user_id);
-            Redis::del(env('ADMIN_URIS_PREFIX') . $user->user_id);
-        }
+    public function __construct(CacheRepository $cacheRepository)
+    {
+        $this->cache = $cacheRepository;
     }
 
     /**
@@ -62,8 +53,8 @@ class RoleRepository
      */
     public function destroyRoleBy($role_id)
     {
-        // 删除所有和具体该角色身份的用户对应的缓存，使其重新生成
-        $this->delUsersCacheBy($role_id);
+        // 删除全部缓存，使其重新生成
+        $this->cache->removeAllCache();
 
         // 将关联表中和该角色相关的关联记录删除
         $this->delUserRoleRelationsBy($role_id);
@@ -120,8 +111,8 @@ class RoleRepository
                 ->delete();
         }
 
-        // 更新该角色对应用户的权限缓存
-        $this->delUsersCacheBy($role->id);
+        // 删除全部缓存
+        $this->cache->removeAllCache();
     }
 
     public function setCheckedPermissionData($checked_permissions)

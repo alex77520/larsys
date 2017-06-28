@@ -3,16 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AdminPermissionRequest;
+use App\Repositories\CacheRepository;
 use App\Repositories\PermissionRepository;
 use App\Http\Controllers\Controller;
 
 class PermissionController extends Controller
 {
     protected $permission_repository;
+    protected $cache;
 
-    public function __construct(PermissionRepository $permissionRepository)
+    public function __construct(PermissionRepository $permissionRepository, CacheRepository $cacheRepository)
     {
         $this->permission_repository = $permissionRepository;
+        $this->cache = $cacheRepository;
     }
 
     public function index()
@@ -70,6 +73,8 @@ class PermissionController extends Controller
             ? $request->input('is_menu') : 0;
 
         if ($permission->save($request->all()))
+            $this->cache->removeAllCache();
+
             flash('编辑权限成功！')->success();
 
         return redirect('/admin/permission');

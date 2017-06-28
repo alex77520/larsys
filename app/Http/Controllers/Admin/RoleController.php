@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AdminRoleRequest;
+use App\Repositories\CacheRepository;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -10,10 +11,12 @@ use App\Http\Controllers\Controller;
 class RoleController extends Controller
 {
     protected $role_repository;
+    protected $cache;
 
-    public function __construct(RoleRepository $roleRepository)
+    public function __construct(RoleRepository $roleRepository, CacheRepository $cacheRepository)
     {
         $this->role_repository = $roleRepository;
+        $this->cache = $cacheRepository;
     }
 
     public function index()
@@ -61,10 +64,10 @@ class RoleController extends Controller
         $role->name = $request->input('name');
 
         if ($role->save())
-            flash('编辑成功！')->success();
+            flash('编辑角色成功！')->success();
 
-        // 删除该角色对应用户的权限缓存
-        $this->role_repository->delUsersCacheBy($role->id);
+        // 删除权限缓存
+        $this->cache->removeAllCache();
 
         return redirect('/admin/role');
     }

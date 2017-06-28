@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Admin;
 use App\Http\Requests\AdminUserRequest;
+use App\Repositories\CacheRepository;
 use App\Repositories\UserRepository;
 use App\Role;
 use App\Http\Controllers\Controller;
@@ -12,10 +13,12 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     protected $user_repository;
+    protected $cache;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, CacheRepository $cacheRepository)
     {
         $this->user_repository = $userRepository;
+        $this->cache = $cacheRepository;
     }
 
     public function index()
@@ -84,8 +87,11 @@ class UserController extends Controller
 
         if ($user->delete()) {
             flash('删除用户成功！')->success();
+
             $this->user_repository->delUserRoleRelationsBy($user_id);
-            $this->user_repository->delUserCacheBy($user_id);
+
+            // 仅删除该用户对应的缓存
+            $this->cache->removeCacheBy($user_id);
         }
 
         return redirect('/admin/user');
