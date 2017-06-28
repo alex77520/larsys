@@ -23,7 +23,7 @@ class RoleRepository
      */
     public function delUserRoleRelationsBy($role_id)
     {
-        DB::table('admin_user_role')->where('role_id', '=', $role_id)->delete();
+        return DB::table('admin_user_role')->where('role_id', '=', $role_id)->delete();
     }
 
     /**
@@ -33,7 +33,7 @@ class RoleRepository
      */
     public function delRolePermissionRelationsBy($role_id)
     {
-        DB::table('admin_role_permission')->where('role_id', '=', $role_id)->delete();
+        return DB::table('admin_role_permission')->where('role_id', '=', $role_id)->delete();
     }
 
     /**
@@ -87,32 +87,13 @@ class RoleRepository
         return $permissions_id;
     }
 
-    public function allotPermissions($permissions_now, $permissions_request, $role)
+    public function allotPermissions($role, $permissions_request)
     {
-        $count_permissions_now = count($permissions_now);
-        $count_permissions_request = count($permissions_request);
+        $this->delRolePermissionRelationsBy($role->id);
 
-        if ($count_permissions_request > $count_permissions_now) {
-            foreach ($permissions_request as $item) {
-                if (! in_array($item, $permissions_now)) {
-                    $role->permissions()->attach($item);
-                }
-            }
-        } else if ($count_permissions_request < $count_permissions_now) {
-            $useless_permissions = [];
-            foreach ($permissions_now as $item) {
-                if (!in_array($item, $permissions_request)) {
-                    $useless_permissions[] = $item;
-                }
-            }
-            DB::table('admin_role_permission')
-                ->where('role_id', '=', $role->id)
-                ->whereIn('permission_id', $useless_permissions)
-                ->delete();
-        }
-
-        // 删除全部缓存
         $this->cache->removeAllCache();
+
+        $role->permissions()->attach($permissions_request);
     }
 
     public function setCheckedPermissionData($checked_permissions)

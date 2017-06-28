@@ -83,13 +83,14 @@ class RoleController extends Controller
 
     public function allot(Request $request, $role_id)
     {
-        $permissions_id = $this->role_repository->getRolePermissionsIdBy($role_id);
-        $role = $this->role_repository->findRoleBy($role_id);
         $permissions_request = $request->input('permissions');
 
-        $this->role_repository->allotPermissions($permissions_id, $permissions_request, $role);
+        $role = $this->role_repository->findRoleBy($role_id);
+
+        $this->role_repository->allotPermissions($role, $permissions_request);
 
         flash('权限分配成功！')->success();
+
         return redirect('/admin/role');
     }
 }

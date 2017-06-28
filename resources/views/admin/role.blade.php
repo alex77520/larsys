@@ -106,7 +106,9 @@
 
                 var setting = {
                     check: {
-                        enable: true
+                        enable: true,
+                        chkStyle: "checkbox",
+                        chkboxType: {  "Y" : "p", "N" : "ps"  }
                     },
                     data: {
                         simpleData: {
