@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class RoleRepository
 {
-
     protected $cache;
 
     public function __construct(CacheRepository $cacheRepository)

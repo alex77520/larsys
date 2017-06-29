@@ -6,7 +6,6 @@ use App\Repositories\PermissionRepository;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CacheRepository;
-use Illuminate\Support\Facades\Redis;
 
 class AuthPermission
 {
@@ -28,8 +27,6 @@ class AuthPermission
      */
     public function handle($request, Closure $next)
     {
-//        dd(unserialize(Redis::hget(env('REDIS_ADMIN_HASH_KEY'), 'menus_' . Auth::guard('admin')->user()->id)));
-
         $this->permission->initMenus();
 
         // 加入防止伪造url登录的验证规则
