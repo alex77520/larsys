@@ -15,16 +15,34 @@ class UserRepository
         $this->cache = $cacheRepository;
     }
 
+    /**
+     * 删除用户和角色的关联数据
+     *
+     * @param $user_id
+     * @return mixed
+     */
     public function delUserRoleRelationsBy($user_id)
     {
         return DB::table('admin_user_role')->where('user_id', '=', $user_id)->delete();
     }
 
+    /**
+     * 通过用户ID获取用户信息
+     *
+     * @param $user_id
+     * @return mixed
+     */
     public function findUserBy($user_id)
     {
         return $user = Admin::find($user_id);
     }
 
+    /**
+     * 获取所有用户并携带用户的角色名称（分页）
+     *
+     * @param int $page
+     * @return mixed
+     */
     public function getAllUsersWithRoleName($page = 5)
     {
         $users = Admin::orderBy('created_at')->with(['roles' => function ($query) {
@@ -34,11 +52,22 @@ class UserRepository
         return $users;
     }
 
+    /**
+     * 获得所有角色的ID和名称
+     *
+     * @return mixed
+     */
     public function getAllRolesIdAndName()
     {
         return $roles = Role::select('id', 'name')->where('name', '!=', '超级管理员')->get();
     }
 
+    /**
+     * 通过用户实例获取对应用户的角色ID
+     *
+     * @param $user
+     * @return array
+     */
     public function getUserRolesIdBy($user)
     {
         $user_roles_id = [];
@@ -49,6 +78,12 @@ class UserRepository
         return $user_roles_id;
     }
 
+    /**
+     * 通过用户ID获取用户并携带用户对应的角色ID和名称
+     *
+     * @param $user_id
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
+     */
     public function findUserWithRoleIdAndName($user_id)
     {
         return $user = Admin::with(['roles' => function($query) {
@@ -56,11 +91,23 @@ class UserRepository
         }])->find($user_id);
     }
 
+    /**
+     * 创建新的用户
+     *
+     * @param $data
+     * @return mixed
+     */
     public function createUser($data)
     {
         return $user = Admin::create($data);
     }
 
+    /**
+     * 分配角色
+     *
+     * @param $user
+     * @param $roles
+     */
     public function allotRolesFor($user, $roles)
     {
         $this->delUserRoleRelationsBy($user->id);

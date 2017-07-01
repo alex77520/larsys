@@ -36,6 +36,8 @@ class RoleRepository
     }
 
     /**
+     * 通过ID得到角色实例
+     *
      * @param $role_id
      * @return mixed
      */
@@ -62,16 +64,34 @@ class RoleRepository
         return Role::destroy($role_id);
     }
 
+    /**
+     * 创建新的角色
+     *
+     * @param array $data
+     * @return mixed
+     */
     public function createRole(array $data)
     {
         return Role::create($data);
     }
 
+    /**
+     * 获取所有角色（分页）
+     *
+     * @param $page
+     * @return mixed
+     */
     public function getAllRoles($page)
     {
         return $roles = Role::orderBy('created_at')->paginate($page);
     }
 
+    /**
+     * 通过角色ID获取所有权限
+     *
+     * @param $role_id
+     * @return array
+     */
     public function getRolePermissionsIdBy($role_id)
     {
         $role = Role::with(['permissions' => function($query) {
@@ -86,6 +106,12 @@ class RoleRepository
         return $permissions_id;
     }
 
+    /**
+     * 分配权限
+     *
+     * @param $role
+     * @param $permissions_request
+     */
     public function allotPermissions($role, $permissions_request)
     {
         $this->delRolePermissionRelationsBy($role->id);
@@ -95,6 +121,12 @@ class RoleRepository
         $role->permissions()->attach($permissions_request);
     }
 
+    /**
+     * 角色分配权限时获取所有已有权限
+     *
+     * @param $checked_permissions
+     * @return mixed
+     */
     public function setCheckedPermissionData($checked_permissions)
     {
         $all_permissions = Permission::select('id', 'name', 'pid')->get();
