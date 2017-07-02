@@ -18,6 +18,11 @@ class PermissionController extends Controller
         $this->cache = $cacheRepository;
     }
 
+    /**
+     * 权限列表展示
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $permissions = $this->permission_repository->getAllPermissions($page = 10);
@@ -25,6 +30,11 @@ class PermissionController extends Controller
         return view('admin.permission', compact('permissions'));
     }
 
+    /**
+     * 添加权限页面展示
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function add()
     {
         $permissions = $this->permission_repository->getAllPermissions($page = 0, $returnArray = true);
@@ -34,6 +44,12 @@ class PermissionController extends Controller
         return view('admin.addPermission', compact('options'));
     }
 
+    /**
+     * 编辑权限页面展示
+     *
+     * @param $permission_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit($permission_id)
     {
         $permissions = $this->permission_repository->getAllPermissions($page = 0, $returnArray = true);
@@ -45,7 +61,12 @@ class PermissionController extends Controller
         return view('admin.editPermission', compact('permission', 'options'));
     }
 
-
+    /**
+     * 删除权限
+     *
+     * @param $permission_id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function del($permission_id)
     {
         if ($this->permission_repository->destroyPermissionBy($permission_id))
@@ -54,6 +75,12 @@ class PermissionController extends Controller
         return redirect('/admin/permission');
     }
 
+    /**
+     * 执行添加权限操作
+     *
+     * @param AdminPermissionRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function doAdd(AdminPermissionRequest $request)
     {
         if ($this->permission_repository->createPermission($request->all()))
@@ -62,6 +89,13 @@ class PermissionController extends Controller
         return redirect('/admin/permission');
     }
 
+    /**
+     * 执行编辑权限操作
+     *
+     * @param AdminPermissionRequest $request
+     * @param $permission_id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function doEdit(AdminPermissionRequest $request, $permission_id)
     {
         $permission = $this->permission_repository->findPermission($permission_id);
@@ -69,13 +103,11 @@ class PermissionController extends Controller
         $permission->name = $request->input('name');
         $permission->uri = $request->input('uri');
         $permission->pid = $request->input('pid');
-        $permission->is_menu = $request->input('is_menu') == 1
-            ? $request->input('is_menu') : 0;
+        $permission->is_menu = $request->input('is_menu') == 1 ? $request->input('is_menu') : 0;
 
-        if ($permission->save($request->all()))
-            $this->cache->removeAllCache();
+        if ($permission->save($request->all())) $this->cache->removeAllCache();
 
-            flash('编辑权限成功！')->success();
+        flash('编辑权限成功！')->success();
 
         return redirect('/admin/permission');
     }

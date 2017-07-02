@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Admin;
-use App\Role;
 use Illuminate\Support\Facades\DB;
 
 class UserRepository
@@ -50,16 +49,6 @@ class UserRepository
         }])->paginate($page);
 
         return $users;
-    }
-
-    /**
-     * 获得所有角色的ID和名称
-     *
-     * @return mixed
-     */
-    public function getAllRolesIdAndName()
-    {
-        return $roles = Role::select('id', 'name')->where('name', '!=', '超级管理员')->get();
     }
 
     /**

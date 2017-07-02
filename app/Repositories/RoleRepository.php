@@ -107,7 +107,7 @@ class RoleRepository
     }
 
     /**
-     * 分配权限
+     * 为角色分配权限
      *
      * @param $role
      * @param $permissions_request
@@ -138,5 +138,15 @@ class RoleRepository
         }
 
         return $all_permissions;
+    }
+
+    /**
+     * 获得所有角色的ID和名称
+     *
+     * @return mixed
+     */
+    public function getAllRolesIdAndName()
+    {
+        return $roles = Role::select('id', 'name')->where('name', '!=', '超级管理员')->get();
     }
 }
