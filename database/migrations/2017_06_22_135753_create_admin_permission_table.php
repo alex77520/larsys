@@ -20,6 +20,7 @@ class CreateAdminPermissionTable extends Migration
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('is_menu')->default(0);
             $table->integer('pid')->default(0);
+            $table->integer('taxis')->default(0);
             $table->timestamps();
         });
     }

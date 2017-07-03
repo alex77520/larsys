@@ -103,6 +103,7 @@ class PermissionController extends Controller
         $permission->name = $request->input('name');
         $permission->uri = $request->input('uri');
         $permission->pid = $request->input('pid');
+        $permission->taxis = $request->input('taxis');
         $permission->is_menu = $request->input('is_menu') == 1 ? $request->input('is_menu') : 0;
 
         if ($permission->save($request->all())) $this->cache->removeAllCache();

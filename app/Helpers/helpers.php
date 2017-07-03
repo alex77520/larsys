@@ -35,7 +35,7 @@ function getClientIP()
         $ip = getenv("HTTP_X_FORWARDED_FOR");
     else if(getenv("REMOTE_ADDR"))
         $ip = getenv("REMOTE_ADDR");
-    else $ip = "Unknow";
+    else $ip = "未知";
 
     return $ip;
 }

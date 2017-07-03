@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.admin_name') }}</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -34,7 +34,7 @@
 
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/admin') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    {{ config('app.admin_name') }}
                 </a>
             </div>
 

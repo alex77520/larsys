@@ -35,7 +35,7 @@
                             <label for="uri" class="col-sm-2 control-label">权限标识</label>
                             <div class="col-sm-8">
                                 <input name="uri" type="text" class="form-control" id="uri"
-                                       value="{{ old('uri') ? old('uri') : '' }}" placeholder="请输入名称">
+                                       value="{{ old('uri') ? old('uri') : '' }}" placeholder="请输入标识">
                             </div>
                             @if ($errors->has('uri'))
                                 <span class="help-block">
@@ -58,6 +58,13 @@
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-8">
                                 <button type="submit" class="btn btn-default btn-success pull-right">提交</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="taxis" class="col-sm-2 control-label">排序</label>
+                            <div class="col-sm-8">
+                                <input name="taxis" type="text" class="form-control" id="taxis"
+                                       value="{{ old('taxis') ? old('taxis') : '' }}" placeholder="排序">
                             </div>
                         </div>
                         <script type="text/javascript">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Support\Facades\Auth;
 use Closure;
 use App\AdminLog;
 
@@ -16,6 +17,7 @@ class AdminUserLog
      */
     public function handle($request, Closure $next)
     {
+        $data['username'] = Auth::guard('admin')->user()->name;
         $data['uri'] = pregReplaceUri($_SERVER['REQUEST_URI']);
         $data['ip'] = getClientIP();
 

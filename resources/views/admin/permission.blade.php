@@ -17,11 +17,12 @@
                             <th>注册时间</th>
                             <th>更新时间</th>
                             <th>操作</th>
+                            <th>排序</th>
                         </tr>
                         @foreach($permissions as $permission)
                             <tr>
                                 <td><b>{{ $permission->id }}</b></td>
-                                <td>{{ $permission->name }}</td>
+                                <td><b>{{ $permission->name }}</b></td>
                                 <td>{{ $permission->uri }}</td>
                                 <td>
                                     <span>{{ $permission->is_menu == 1 ? '菜单' : '隐藏' }}</span>
@@ -32,6 +33,7 @@
                                     <a type="button" class="btn-xs btn-primary" href="{{ url('/admin/permission/'. $permission->id .'/edit') }}">编辑</a>
                                     <a type="button" class="btn-xs btn-danger" href="{{ url('/admin/permission/'. $permission->id .'/del') }}">删除</a>
                                 </td>
+                                <td>{{ $permission->taxis }}</td>
                             </tr>
                         @endforeach
                     </table>

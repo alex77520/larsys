@@ -11,7 +11,7 @@ class AdminLog extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'name', 'uri', 'ip'
+        'name', 'uri', 'ip', 'username'
     ];
 
     public function getNameByUri($uri)

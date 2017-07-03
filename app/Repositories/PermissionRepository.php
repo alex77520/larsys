@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Admin;
 use App\Permission;
 use App\Role;
-use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -109,6 +109,7 @@ class PermissionRepository
     {
         $admin_menus = Permission::where('is_menu', 1)
             ->select('id', 'pid', 'name', 'uri')
+            ->orderBy('taxis')
             ->get()
             ->toArray();
 
@@ -232,7 +233,7 @@ class PermissionRepository
      */
     public function findRolesBy($user_id)
     {
-        return $user_roles = User::find($user_id)->roles()->get()->toArray();
+        return $user_roles = Admin::find($user_id)->roles()->get()->toArray();
     }
 
     /**
@@ -266,14 +267,14 @@ class PermissionRepository
     {
         if ($page === 0) {
             if ($returnArray === false) {
-                $permissions = Permission::where('status', 1)->orderBy('created_at')->get();
+                $permissions = Permission::where('status', 1)->orderBy('taxis')->get();
             } else {
-                $permissions = Permission::where('status', 1)->orderBy('created_at')->get()->toArray();
+                $permissions = Permission::where('status', 1)->orderBy('taxis')->get()->toArray();
             }
         }
 
         if ($returnArray === false) {
-            $permissions = Permission::where('status', 1)->orderBy('created_at')->paginate($page);
+            $permissions = Permission::where('status', 1)->orderBy('taxis')->paginate($page);
         }
 
         return $permissions;

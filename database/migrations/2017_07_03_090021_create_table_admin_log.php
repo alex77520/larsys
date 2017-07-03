@@ -18,6 +18,7 @@ class CreateTableAdminLog extends Migration
             $table->string('uri');
             $table->string('name')->nullable();
             $table->string('ip');
+            $table->string('username');
             $table->timestamps();
         });
     }
