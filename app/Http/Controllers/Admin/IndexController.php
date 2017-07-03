@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\AdminLog;
 use App\Http\Controllers\Controller;
 use App\Repositories\AdminLogRepository;
 use App\Repositories\PermissionRepository;
@@ -34,7 +33,7 @@ class IndexController extends Controller
      */
     public function log()
     {
-        $logs = AdminLog::orderBy('created_at', 'desc')->paginate(10);
+        $logs = $this->log->getAllLogs(10);
 
         return view('admin/log', compact('logs'));
     }
