@@ -65,7 +65,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
 
     // Login|Logout
     Route::get('/login', 'LoginController@showLoginForm')->name('admin.login');
-    Route::post('/login', 'LoginController@login')->middleware('admin.log');
+    Route::post('/login', 'LoginController@login');
     Route::post('/logout', 'LoginController@logout');
 
     // Log

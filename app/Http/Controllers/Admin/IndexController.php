@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\AdminLog;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\PermissionRepository;
 
 class IndexController extends Controller
@@ -22,6 +20,11 @@ class IndexController extends Controller
         return view('admin.index');
     }
 
+    /**
+     * 日志页面展示
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function log()
     {
         $logs = AdminLog::orderBy('created_at', 'desc')->paginate(10);
