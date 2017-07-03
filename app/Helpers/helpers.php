@@ -7,7 +7,7 @@
 * @param int $pid
 * @return array
 */
-function buildTree(array $nav = [], $pid = 0)
+function buildTree($nav = [], $pid = 0)
 {
     $arr = [];
 
@@ -49,4 +49,36 @@ function getClientIP()
 function pregReplaceUri($uri)
 {
     return preg_replace('/(((\?)(\w|=)+)|(\/\d+))/', '', $uri);
+}
+
+
+/**
+ * 选择下拉选项拼接
+ *
+ * @param array $buildArr 数组
+ * @param string $selected_id 已选择项ID
+ * @param string $separation 菜单层级分隔符
+ * @param int $repeat_num 分隔符重复次数
+ * @return string
+ */
+function buildOptionStr($buildArr = [], $selected_id = '', $separation = '', $repeat_num = 1)
+{
+    $options = '';
+    $repeat_num = $repeat_num * 2;
+
+    foreach ($buildArr as $item) {
+
+        $options .= '<option value="'. $item['id'] .'"';
+
+        if ($item['id'] == $selected_id) $options .= 'selected';
+
+        $options .= '>'. str_repeat($separation, $repeat_num) . $item['name'] .'</option>';
+
+        if ($item['sub_menu'] != '') {
+
+            $options .= buildOptionStr($item['sub_menu'], '', '—', $repeat_num);
+        }
+    }
+
+    return $options;
 }

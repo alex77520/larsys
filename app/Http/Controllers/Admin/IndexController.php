@@ -4,19 +4,26 @@ namespace App\Http\Controllers\Admin;
 
 use App\AdminLog;
 use App\Http\Controllers\Controller;
+use App\Repositories\AdminLogRepository;
 use App\Repositories\PermissionRepository;
 
 class IndexController extends Controller
 {
     protected $permission;
+    protected $log;
 
-    public function __construct(PermissionRepository $permissionRepository)
+    public function __construct(PermissionRepository $permissionRepository,
+                                AdminLogRepository $adminLogRepository)
     {
         $this->permission = $permissionRepository;
+        $this->log = $adminLogRepository;
     }
 
     public function index()
     {
+        // 删除过期的日志
+        $this->log->delOverdueLog();
+
         return view('admin.index');
     }
 

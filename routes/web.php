@@ -48,6 +48,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('/permission/add', 'PermissionController@add');
         Route::get('/permission/{role_id}/edit', 'PermissionController@edit');
         Route::get('/permission/{role_id}/del', 'PermissionController@del');
+
+        // Cate
+        Route::get('/cate', 'CateController@index');
+        Route::get('/cate/add', 'CateController@add');
     });
 
     // User

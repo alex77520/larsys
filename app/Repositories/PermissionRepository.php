@@ -279,35 +279,4 @@ class PermissionRepository
 
         return $permissions;
     }
-
-    /**
-     * 选择权限层级用到的下拉选项拼接
-     *
-     * @param $permissions 权限数组
-     * @param string $selected_id 已选择项ID
-     * @param string $separation 菜单层级分隔符
-     * @param int $repeat_num 分隔符重复次数
-     * @return string
-     */
-    public function buildOptionStr($permissions, $selected_id = '', $separation = '', $repeat_num = 1)
-    {
-        $options = '';
-        $repeat_num = $repeat_num * 2;
-
-        foreach ($permissions as $permission) {
-
-            $options .= '<option value="'. $permission['id'] .'"';
-
-            if ($permission['id'] == $selected_id) $options .= 'selected';
-
-            $options .= '>'. str_repeat($separation, $repeat_num) . $permission['name'] .'</option>';
-
-            if ($permission['sub_menu'] != '') {
-
-                $options .= $this->buildOptionStr($permission['sub_menu'], '', '—', $repeat_num);
-            }
-        }
-
-        return $options;
-    }
 }

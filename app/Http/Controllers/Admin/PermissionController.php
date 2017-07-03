@@ -39,7 +39,7 @@ class PermissionController extends Controller
     {
         $permissions = $this->permission_repository->getAllPermissions($page = 0, $returnArray = true);
 
-        $options = $this->permission_repository->buildOptionStr(buildTree($permissions));
+        $options = buildOptionStr(buildTree($permissions));
 
         return view('admin.addPermission', compact('options'));
     }
@@ -56,7 +56,7 @@ class PermissionController extends Controller
 
         $permission = $this->permission_repository->findPermission($permission_id);
 
-        $options = $this->permission_repository->buildOptionStr(buildTree($permissions), $permission->pid);
+        $options = buildOptionStr(buildTree($permissions), $permission->pid);
 
         return view('admin.editPermission', compact('permission', 'options'));
     }

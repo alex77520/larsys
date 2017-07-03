@@ -2,12 +2,18 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Support\Facades\Auth;
 use Closure;
-use App\AdminLog;
+use App\Repositories\AdminLogRepository;
 
 class AdminUserLog
 {
+    protected $log;
+
+    public function __construct(AdminLogRepository $adminLogRepository)
+    {
+        $this->log = $adminLogRepository;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -17,14 +23,8 @@ class AdminUserLog
      */
     public function handle($request, Closure $next)
     {
-        $data['username'] = Auth::guard('admin')->user()->name;
-        $data['uri'] = pregReplaceUri($_SERVER['REQUEST_URI']);
-        $data['ip'] = getClientIP();
 
-        $log = new AdminLog();
-        $data['name'] = $log->getNameByUri($data['uri']);
-
-        if (! $log->create($data)) return '权限写入失败！';
+        if (! $this->log->putLogInDatabase()) return '权限写入失败！';
 
         return $next($request);
     }
