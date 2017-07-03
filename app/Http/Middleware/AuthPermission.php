@@ -32,7 +32,7 @@ class AuthPermission
         // 加入防止伪造url登录的验证规则
         $user_id = Auth::guard('admin')->user()->id;
 
-        $uri = preg_replace('/(((\?)(\w|=)+)|(\/\d+))/', '', $_SERVER['REQUEST_URI']);
+        $uri = pregReplaceUri($_SERVER['REQUEST_URI']);
 
         if (! in_array($uri, unserialize($this->cache->hashGet(env('REDIS_ADMIN_HASH_KEY'), 'uris_' . $user_id))))
             return abort('401');

@@ -24,7 +24,7 @@ Route::get('/home', 'HomeController@index')->name('home');
  */
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     // 需要判断是否登录和验证权限的路由
-    Route::group(['middleware' => ['auth.admin', 'auth.permission']], function () {
+    Route::group(['middleware' => ['auth.admin', 'auth.permission', 'admin.log']], function () {
         Route::get('/', 'IndexController@index');
         Route::get('/article', 'ArticleController@index');
 
@@ -65,8 +65,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
 
     // Login|Logout
     Route::get('/login', 'LoginController@showLoginForm')->name('admin.login');
-    Route::post('/login', 'LoginController@login');
+    Route::post('/login', 'LoginController@login')->middleware('admin.log');
     Route::post('/logout', 'LoginController@logout');
+
+    // Log
+    Route::get('/log', 'IndexController@log');
 
 });
 
