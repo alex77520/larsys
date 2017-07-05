@@ -23,10 +23,11 @@ class CreateAdminCateTable extends Migration
             $table->text('digest')->nullable();
             $table->text('content')->nullable();
             $table->string('self_temp')->nullable();
-            $table->string('article_temp')->nullable();
+            $table->string('content_temp')->nullable();
             $table->integer('pid')->default(0);
             $table->tinyInteger('level')->default(0);
             $table->integer('taxis')->default(0);
+            $table->string('link')->nullable();
             $table->timestamps();
         });
     }

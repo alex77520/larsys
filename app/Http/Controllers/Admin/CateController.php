@@ -24,6 +24,8 @@ class CateController extends Controller
 
     public function add()
     {
-        return view('admin.addCate');
+        $cates = $this->cate_repository->getAllCates();
+
+        return view('admin.addCate', compact('cates'));
     }
 }

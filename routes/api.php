@@ -16,3 +16,6 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// 上传图片
+Route::post('/admin/uploadIcon', 'Admin\UploadController@uploadIcon');

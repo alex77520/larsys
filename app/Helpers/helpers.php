@@ -82,3 +82,43 @@ function buildOptionStr($buildArr = [], $selected_id = '', $separation = '', $re
 
     return $options;
 }
+
+/**
+ * 一级展示下拉菜单
+ *
+ * @param $mixed
+ * @param int $pid
+ * @return array
+ */
+function setDropDownMenu($mixed, $pid = 0)
+{
+    static $menu = [];
+
+    foreach ($mixed as $item) {
+        if ($item->pid == $pid) {
+            $menu[] = $item;
+            setDropDownMenu($mixed, $item->id);
+        }
+    }
+
+    return $menu;
+}
+
+function readDirFiles($dir)
+{
+    $handler = opendir($dir);
+    $files = [];
+
+    while( ($filename = readdir($handler)) !== false ) {
+
+        if($filename != "." && $filename != ".."){
+
+            $files[] = $filename;
+
+        }
+    }
+
+    closedir($handler);
+
+    return $files;
+}

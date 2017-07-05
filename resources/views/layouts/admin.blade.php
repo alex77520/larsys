@@ -13,8 +13,8 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <link rel="stylesheet" href="{{ asset('css/zTreeStyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
 </head>
 <body>

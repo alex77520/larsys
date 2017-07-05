@@ -10,7 +10,6 @@ class Cate extends Model
     const PAGE = 1;
     const ARTICLE = 2;
     const SHOP = 3;
-    const LINK = 4;
 
     protected $table = 'cate';
 
@@ -22,16 +21,15 @@ class Cate extends Model
     {
         $model_arr = [
             self::CATE => '分类',
-            self::PAGE => '单页',
-            self::ARTICLE => '文章',
-            self::SHOP =>  '商品',
-            self::LINK => '链接'
+            self::PAGE => '单页面',
+            self::ARTICLE => '文章列表',
+            self::SHOP =>  '产品列表',
         ];
 
         if ($model !== null) {
             return array_key_exists($model, $model_arr) ? $model_arr[$model] : $model_arr[self::PAGE];
         }
 
-        return '未知';
+        return $model_arr;
     }
 }
