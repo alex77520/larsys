@@ -36,12 +36,6 @@ class IndexController extends Controller
     {
         $logs = $this->log->getAllLogs(10);
 
-        /*$page = view('admin/log', compact('logs'))->render();
-
-        Storage::disk('public')->put('log/1.html', $page);
-
-        return redirect('/storage/log/1.html');*/
-
         return view('admin/log', compact('logs'));
     }
 }

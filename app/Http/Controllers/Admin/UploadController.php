@@ -17,7 +17,7 @@ class UploadController extends Controller
 
     public function uploadImg(Request $request)
     {
-        if ($file = $this->upload->upload($request)) {
+        if ($file = $this->upload->uploadImg($request)) {
 
             return response()->json(['msg' => '/storage/' . $file]);
         };

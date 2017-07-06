@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class UploadRepository
 {
-    public function upload(Request $request)
+    public function uploadImg(Request $request)
     {
         $type = $request->input('type');
 
