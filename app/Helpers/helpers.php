@@ -77,6 +77,7 @@ function buildOptionStr($buildArr = [], $selected_id = '', $separation = '', $re
         if ($item['sub_menu'] != '') {
 
             $options .= buildOptionStr($item['sub_menu'], '', '—', $repeat_num);
+
         }
     }
 
@@ -121,4 +122,24 @@ function readDirFiles($dir)
     closedir($handler);
 
     return $files;
+}
+
+/**
+ * 根据模型（类型）代码判断模型（类型）名称
+ * 主要用在model和type的判断
+ * Cate.php Image.php
+ *
+ * @param $arr
+ * @param $type
+ * @return mixed
+ */
+function judgeType($arr, $type) {
+
+    if ($type !== null) {
+
+        return array_key_exists($type, $arr) ? $arr[$type] : '未知';
+
+    }
+
+    return $arr;
 }

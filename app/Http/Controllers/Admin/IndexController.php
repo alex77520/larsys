@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Repositories\AdminLogRepository;
 use App\Repositories\PermissionRepository;
+use Illuminate\Support\Facades\Storage;
 
 class IndexController extends Controller
 {
@@ -34,6 +35,12 @@ class IndexController extends Controller
     public function log()
     {
         $logs = $this->log->getAllLogs(10);
+
+        /*$page = view('admin/log', compact('logs'))->render();
+
+        Storage::disk('public')->put('log/1.html', $page);
+
+        return redirect('/storage/log/1.html');*/
 
         return view('admin/log', compact('logs'));
     }

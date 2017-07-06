@@ -11,21 +11,31 @@
                     <h4>添加栏目</h4>
                 </div>
                 <div class="panel-body">
+                    <!--icons-->
                     <div>
-                        <form action="/api/admin/uploadIcon" method="post" id="uploadIcon">
+                        <form action="/api/admin/uploadImg" method="post" id="uploadIcon">
                             {{ csrf_field() }}
-                            <input type="file" name="uploadIcon" class="hidden"/>
+                            <input type="file" name="uploadImg" class="hidden uploadIcon"/>
+                            <input type="text" name="type" value="icons" class="hidden"/>
+                        </form>
+                    </div>
+                    <!--banners-->
+                    <div>
+                        <form action="/api/admin/uploadImg" method="post" id="uploadBanner">
+                            {{ csrf_field() }}
+                            <input type="file" name="uploadImg" class="hidden uploadBanner"/>
+                            <input type="text" name="type" value="banners" class="hidden"/>
                         </form>
                     </div>
                     <script>
                         $(function () {
-                            $('input[name=uploadIcon]').change(function () {
+                            $('.uploadIcon').change(function () {
                                 $('#uploadIcon').trigger('submit');
                             });
                             $('#uploadIcon').on('submit', function (e) {
                                 e.preventDefault();
                                  $.ajax({
-                                 url: '/api/admin/uploadIcon',
+                                 url: '/api/admin/uploadImg',
                                  type: 'post',
                                  data: new FormData(this),
                                  contentType: false,
@@ -34,7 +44,24 @@
                                  success: function (res) {
                                      $('input[name=icon]').val(res.msg);
                                  }})
-                            })
+                            });
+
+                            $('.uploadBanner').change(function () {
+                                $('#uploadBanner').trigger('submit');
+                            });
+                            $('#uploadBanner').on('submit', function (e) {
+                                e.preventDefault();
+                                $.ajax({
+                                    url: '/api/admin/uploadImg',
+                                    type: 'post',
+                                    data: new FormData(this),
+                                    contentType: false,
+                                    cache: false,
+                                    processData: false,
+                                    success: function (res) {
+                                        $('input[name=banner]').val(res.msg);
+                                    }})
+                            });
                         })
                     </script>
                     <form class="form-horizontal" method="post" action="{{ url('/admin/cate/doAdd') }}">
@@ -65,10 +92,19 @@
                         <div class="form-group">
                             <label for="icon" class="col-sm-2 control-label">栏目图标</label>
                             <div class="col-sm-6">
-                                <input name="icon" type="text" class="form-control" id="icon" placeholder="请选择图片">
+                                <input name="icon" type="text" class="form-control" id="icon" placeholder="请选择栏目的图标">
                             </div>
-                            <div class="col-sm-2">
-                                <button class="btn btn-info" onclick="$('input[name=uploadIcon]').click();">选择图片</button>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary" onclick="$('.uploadIcon').click();">选择图片</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="banner" class="col-sm-2 control-label">栏目大图</label>
+                            <div class="col-sm-6">
+                                <input name="banner" type="text" class="form-control" id="banner" placeholder="请选择栏目的Banner">
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary" onclick="$('.uploadBanner').click();">选择图片</button>
                             </div>
                         </div>
                         <div class="form-group">

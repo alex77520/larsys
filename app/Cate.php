@@ -17,6 +17,11 @@ class Cate extends Model
 
     protected $guarded = [];
 
+    public function images()
+    {
+        return $this->morphMany('App\Image', 'model');
+    }
+
     public function getModelName($model)
     {
         $model_arr = [
@@ -26,10 +31,6 @@ class Cate extends Model
             self::SHOP =>  '产品列表',
         ];
 
-        if ($model !== null) {
-            return array_key_exists($model, $model_arr) ? $model_arr[$model] : $model_arr[self::PAGE];
-        }
-
-        return $model_arr;
+        return judgeType($model_arr, $model);
     }
 }
