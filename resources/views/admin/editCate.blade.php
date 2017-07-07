@@ -8,12 +8,12 @@
         <div class="row">
             <div class="panel">
                 <div class="panel-heading">
-                    <h4>添加栏目</h4>
+                    <h4>编辑栏目</h4>
                 </div>
                 <div class="panel-body">
 
-                    {{--上传图片的真实表单位置--}}
-                    <!--icons-->
+                {{--上传图片的真实表单位置--}}
+                <!--icons-->
                     <div>
                         <form action="/api/admin/uploadImg" method="post" id="uploadIcon">
                             {{ csrf_field() }}
@@ -37,16 +37,16 @@
                             });
                             $('#uploadIcon').on('submit', function (e) {
                                 e.preventDefault();
-                                 $.ajax({
-                                 url: '/api/admin/uploadImg',
-                                 type: 'post',
-                                 data: new FormData(this),
-                                 contentType: false,
-                                 cache: false,
-                                 processData: false,
-                                 success: function (res) {
-                                     $('input[name=icon]').val(res.msg);
-                                 }})
+                                $.ajax({
+                                    url: '/api/admin/uploadImg',
+                                    type: 'post',
+                                    data: new FormData(this),
+                                    contentType: false,
+                                    cache: false,
+                                    processData: false,
+                                    success: function (res) {
+                                        $('input[name=icon]').val(res.msg);
+                                    }})
                             });
 
                             // 上传banner
@@ -70,13 +70,13 @@
                         })
                     </script>
 
-                    <form class="form-horizontal" method="post" action="{{ url('/admin/cate/doAdd') }}">
+                    <form class="form-horizontal" method="post" action="{{ url('/admin/cate/doEdit/' . $my_cate->id) }}">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">栏目名称</label>
                             <div class="col-sm-8">
                                 <input name="name" type="text" class="form-control" id="name"
-                                       value="{{ old('name') ? old('name') : '' }}" placeholder="请输入名称" required>
+                                       value="{{ old('name') ? old('name') : $my_cate->name }}" placeholder="请输入名称" required>
                             </div>
                             @if ($errors->has('name'))
                                 <span class="help-block">
@@ -90,7 +90,8 @@
                                 <select name="pid" class="js-example-basic-single form-control pid-dropdown" id="pid" required>
                                     <option value="0">最高层级</option>
                                     @foreach($cates as $cate)
-                                        <option value="{{ $cate->id }}">{{ str_repeat('—', 2 * $cate->level) . $cate->name }}</option>
+                                        <option value="{{ $cate->id }}" {{ $my_cate->pid == $cate->id ? 'selected' : ''}}>
+                                            {{ str_repeat('—', 2 * $cate->level) . $cate->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -99,7 +100,7 @@
                             <label for="level" class="col-sm-2 control-label">所处层级</label>
                             <div class="col-sm-3">
                                 <input name="level" type="text" class="form-control" id="level"
-                                       value="{{ old('level') ? old('level') : '' }}" placeholder="请输入栏目的LEVEL,最高为0" required>
+                                       value="{{ old('level') ? old('level') : $my_cate->level }}" placeholder="请输入栏目的LEVEL,最高为0" required>
                             </div>
                             @if ($errors->has('level'))
                                 <span class="help-block">
@@ -111,8 +112,8 @@
                             <label for="status" class="col-sm-2 control-label">栏目状态</label>
                             <div class="col-sm-2">
                                 <select name="status" class="js-example-basic-single form-control pid-dropdown" id="status" required>
-                                    <option value="1">显示</option>
-                                    <option value="0">隐藏</option>
+                                    <option value="1" {{ $my_cate->status == 1 ? 'selected' : '' }}>显示</option>
+                                    <option value="0" {{ $my_cate->status == 0 ? 'selected' : '' }}>隐藏</option>
                                 </select>
                             </div>
                         </div>
@@ -120,7 +121,7 @@
                             <label for="icon" class="col-sm-2 control-label">栏目图标</label>
                             <div class="col-sm-6">
                                 <input name="icon" type="text" class="form-control"
-                                       value="{{ old('icon') ? old('icon') : '' }}"
+                                       value="{{ old('icon') ? old('icon') : $my_cate->images[0]->url }}"
                                        id="icon" placeholder="请选择栏目的图标">
                             </div>
                             <div class="col-sm-3">
@@ -131,7 +132,7 @@
                             <label for="banner" class="col-sm-2 control-label">栏目大图</label>
                             <div class="col-sm-6">
                                 <input name="banner" type="text" class="form-control"
-                                       value="{{ old('banner') ? old('banner') : '' }}"
+                                       value="{{ old('banner') ? old('banner') : $my_cate->images[1]->url }}"
                                        id="banner" placeholder="请选择栏目的Banner">
                             </div>
                             <div class="col-sm-3">
@@ -143,7 +144,7 @@
                             <div class="col-sm-4">
                                 <select name="model" class="js-example-basic-single form-control model-dropdown" id="model" required>
                                     @foreach($models = $cates[0]->getModelName(null) as $key => $model)
-                                        <option value="{{ $key }}">{{ $model }}</option>
+                                        <option value="{{ $key }}" {{ $my_cate->model == $key ? 'selected' : '' }} >{{ $model }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -154,7 +155,7 @@
                                 <select name="self_temp" class="js-example-basic-single form-control self-dropdown" id="self_temp">
                                     <option value="">无</option>
                                     @foreach($self_temps as $self_temp)
-                                        <option value="{{ $self_temp['prefix'] }}">{{ $self_temp['file'] }}</option>
+                                        <option value="{{ $self_temp['prefix'] }}" {{ $my_cate->self_temp == $self_temp['prefix'] ? 'selected' : '' }}>{{ $self_temp['file'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -165,7 +166,9 @@
                                 <select name="content_temp" class="js-example-basic-single form-control content-dropdown" id="content_temp">
                                     <option value="">无</option>
                                     @foreach($content_temps as $content_temp)
-                                        <option value="{{ $content_temp['prefix'] }}">{{ $content_temp['file'] }}</option>
+                                        <option value="{{ $content_temp['prefix'] }}"
+                                                {{ $my_cate->content_temp == $content_temp['prefix'] ? 'selected' : '' }}
+                                        >{{ $content_temp['file'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -173,8 +176,9 @@
                         <div class="form-group">
                             <label for="digest" class="col-sm-2 control-label">栏目简介</label>
                             <div class="col-sm-8">
-                                <textarea name="digest" rows="3" class="form-control" id="digest" placeholder="请输入简介">
-                                    {{ old('digest') ? old('digest') : '' }}
+                                <textarea name="digest" rows="3"
+                                          class="form-control" id="digest"
+                                          placeholder="请输入简介">{{ old('digest') ? old('digest') : $my_cate->digest }}
                                 </textarea>
                             </div>
                             @if($errors->has('digest'))
@@ -186,14 +190,14 @@
                         <div class="form-group">
                             <label for="content" class="col-sm-2 control-label">栏目内容</label>
                             <div class="col-sm-8">
-                                <textarea name="content" type="text/plain" id="content">{{ old('content') ? old('content') : '' }}</textarea>
+                                <textarea name="content" type="text/plain" id="content">{{ old('content') ? old('content') : $my_cate->content }}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="taxis" class="col-sm-2 control-label">排序</label>
                             <div class="col-sm-2">
                                 <input name="taxis" type="text" class="form-control" id="taxis"
-                                       value="{{ old('taxis') ? old('taxis') : '' }}" placeholder="排序">
+                                       value="{{ old('taxis') ? old('taxis') : $my_cate->taxis }}" placeholder="排序">
                             </div>
                         </div>
                         <div class="form-group">

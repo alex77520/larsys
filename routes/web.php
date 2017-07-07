@@ -52,6 +52,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         // Cate
         Route::get('/cate', 'CateController@index');
         Route::get('/cate/add', 'CateController@add');
+        Route::get('/cate/{cate_id}/edit', 'CateController@edit');
+        Route::get('/cate/{cate_id}/del', 'CateController@del');
     });
 
     // User
@@ -74,6 +76,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
 
     // Log
     Route::get('/log', 'IndexController@log');
+
+    // Cate
+    Route::post('/cate/doAdd', 'CateController@doAdd');
+    Route::post('/cate/doEdit/{cate_id}', 'CateController@doEdit');
 
 });
 

@@ -18,8 +18,6 @@ class CreateAdminCateTable extends Migration
             $table->string('name');
             $table->tinyInteger('model')->default(1);
             $table->tinyInteger('status')->default(1);
-            $table->string('icon')->nullable();
-            $table->string('pic')->nullable();
             $table->text('digest')->nullable();
             $table->text('content')->nullable();
             $table->string('self_temp')->nullable();
@@ -27,7 +25,6 @@ class CreateAdminCateTable extends Migration
             $table->integer('pid')->default(0);
             $table->tinyInteger('level')->default(0);
             $table->integer('taxis')->default(0);
-            $table->string('link')->nullable();
             $table->timestamps();
         });
     }

@@ -16,4 +16,27 @@ class CateRepository
 
         return $cates = setDropDownMenu($cates);
     }
+
+    public function createCate($data)
+    {
+        return Cate::create($data);
+    }
+
+    public function delCateBy($cate_id)
+    {
+        return Cate::destroy($cate_id);
+    }
+
+    public function updateCate($cate_id, $data)
+    {
+        return Cate::where('id', $cate_id)->update($data);
+    }
+
+    public function findCateBy($cate_id)
+    {
+        return Cate::with(['images' => function($query) {
+            return $query->orderBy('type', 'asc');
+        }])->find($cate_id);
+    }
+
 }

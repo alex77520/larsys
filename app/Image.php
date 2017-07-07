@@ -22,6 +22,11 @@ class Image extends Model
         return $this->morphTo();
     }
 
+    public function tags()
+    {
+        return $this->hasOne('App\Tag', 'image_id');
+    }
+
     public function getImgType($type)
     {
         $types = [
