@@ -9,12 +9,12 @@ use App\Http\Controllers\Controller;
 
 class PermissionController extends Controller
 {
-    protected $permission_repository;
+    protected $permissionRepository;
     protected $cache;
 
     public function __construct(PermissionRepository $permissionRepository, CacheRepository $cacheRepository)
     {
-        $this->permission_repository = $permissionRepository;
+        $this->permissionRepository = $permissionRepository;
         $this->cache = $cacheRepository;
     }
 
@@ -25,7 +25,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = $this->permission_repository->getAllPermissions($page = 20);
+        $permissions = $this->permissionRepository->getAllPermissions($page = 20);
 
         return view('admin.permission', compact('permissions'));
     }
@@ -37,7 +37,7 @@ class PermissionController extends Controller
      */
     public function add()
     {
-        $permissions = $this->permission_repository->getAllPermissions($page = 0);
+        $permissions = $this->permissionRepository->getAllPermissions($page = 0);
 
         $options = setDropDownMenu($permissions);
 
@@ -52,9 +52,9 @@ class PermissionController extends Controller
      */
     public function edit($permission_id)
     {
-        $permissions = $this->permission_repository->getAllPermissions($page = 0);
+        $permissions = $this->permissionRepository->getAllPermissions($page = 0);
 
-        $permission = $this->permission_repository->findPermission($permission_id);
+        $permission = $this->permissionRepository->findPermission($permission_id);
 
         $options = setDropDownMenu($permissions);
 
@@ -69,7 +69,7 @@ class PermissionController extends Controller
      */
     public function del($permission_id)
     {
-        if ($this->permission_repository->destroyPermissionBy($permission_id))
+        if ($this->permissionRepository->destroyPermissionBy($permission_id))
             flash('删除权限成功！')->success();
 
         return redirect('/admin/permission');
@@ -83,7 +83,7 @@ class PermissionController extends Controller
      */
     public function doAdd(AdminPermissionRequest $request)
     {
-        if ($this->permission_repository->createPermission($request->all()))
+        if ($this->permissionRepository->createPermission($request->all()))
             flash('添加权限成功！')->success();
 
         return redirect('/admin/permission');
@@ -98,7 +98,7 @@ class PermissionController extends Controller
      */
     public function doEdit(AdminPermissionRequest $request, $permission_id)
     {
-        $permission = $this->permission_repository->findPermission($permission_id);
+        $permission = $this->permissionRepository->findPermission($permission_id);
 
         $permission->name = $request->input('name');
         $permission->uri = $request->input('uri');

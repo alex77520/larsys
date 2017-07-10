@@ -5,7 +5,7 @@
         <div class="row">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    管理员日志列表(5天以内)
+                    管理员日志列表(3天以内)
                 </div>
                 <div class="panel-body">
                     <table class="table table-striped table-hover">

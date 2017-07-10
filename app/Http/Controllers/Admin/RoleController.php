@@ -10,12 +10,12 @@ use App\Http\Controllers\Controller;
 
 class RoleController extends Controller
 {
-    protected $role_repository;
+    protected $roleRepository;
     protected $cache;
 
     public function __construct(RoleRepository $roleRepository, CacheRepository $cacheRepository)
     {
-        $this->role_repository = $roleRepository;
+        $this->roleRepository = $roleRepository;
         $this->cache = $cacheRepository;
     }
 
@@ -26,7 +26,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = $this->role_repository->getAllRoles($page = 5);
+        $roles = $this->roleRepository->getAllRoles($page = 5);
 
         return view('admin.role', compact('roles'));
     }
@@ -49,7 +49,7 @@ class RoleController extends Controller
      */
     public function edit($role_id)
     {
-        $role = $this->role_repository->findRoleBy($role_id);
+        $role = $this->roleRepository->findRoleBy($role_id);
 
         return view('admin.editRole', compact('role'));
     }
@@ -62,7 +62,7 @@ class RoleController extends Controller
      */
     public function del($role_id)
     {
-        if ($this->role_repository->destroyRoleBy($role_id)) {
+        if ($this->roleRepository->destroyRoleBy($role_id)) {
             flash('删除角色成功！')->success();
         }
 
@@ -79,7 +79,7 @@ class RoleController extends Controller
     {
         $data = $request->all();
 
-        if ($this->role_repository->createRole($data))
+        if ($this->roleRepository->createRole($data))
             flash('创建角色成功！')->success();
 
         return redirect('/admin/role');
@@ -94,7 +94,7 @@ class RoleController extends Controller
      */
     public function doEdit(AdminRoleRequest $request, $role_id)
     {
-        $role = $this->role_repository->findRoleBy($role_id);
+        $role = $this->roleRepository->findRoleBy($role_id);
 
         $role->name = $request->input('name');
 
@@ -116,9 +116,9 @@ class RoleController extends Controller
      */
     public function getPermissions($role_id)
     {
-        $checked_permissions = $this->role_repository->getRolePermissionsIdBy($role_id);
+        $checked_permissions = $this->roleRepository->getRolePermissionsIdBy($role_id);
 
-        $all_permissions = $this->role_repository->setCheckedPermissionData($checked_permissions);
+        $all_permissions = $this->roleRepository->setCheckedPermissionData($checked_permissions);
 
         return response()->json($all_permissions);
     }
@@ -134,9 +134,9 @@ class RoleController extends Controller
     {
         $permissions_request = $request->input('permissions');
 
-        $role = $this->role_repository->findRoleBy($role_id);
+        $role = $this->roleRepository->findRoleBy($role_id);
 
-        $this->role_repository->allotPermissions($role, $permissions_request);
+        $this->roleRepository->allotPermissions($role, $permissions_request);
 
         flash('权限分配成功！')->success();
 

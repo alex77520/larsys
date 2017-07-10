@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class StaticPageController extends Controller
@@ -16,7 +15,12 @@ class StaticPageController extends Controller
         return redirect('/storage/log/1.html');
     }
 
-    public function makeContentPage($id)
+    public function catePageCreate($cate_id)
+    {
+
+    }
+
+    public function contentPageCreate($content_id)
     {
 
     }

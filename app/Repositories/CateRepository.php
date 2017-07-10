@@ -35,11 +35,13 @@ class CateRepository
     public function findImagesAndTags($images, $type = 2)
     {
         $atlas = [];
-        $image_repository = new ImageRepository();
+        $imageRepository = new ImageRepository();
 
-        foreach ($images as $image) {
-            if ($image->type == $type) {
-                $atlas[] = $image_repository->findAtlasWithTagBy($image->id);
+        foreach ($images as $image)
+        {
+            if ($image->type == $type)
+            {
+                $atlas[] = $imageRepository->findAtlasWithTagBy($image->id);
             }
         }
 

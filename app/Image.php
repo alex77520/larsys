@@ -30,10 +30,10 @@ class Image extends Model
     public function getImgType($type)
     {
         $types = [
-            ICONS => '图标',
-            BANNER => '展示图',
-            ATLAS => '图集',
-            CAROUSEL => '轮播图'
+            self::ICON => '图标',
+            self::BANNER => '展示图',
+            self::ATLAS => '图集',
+            self::CAROUSEL => '轮播图'
         ];
 
         return judgeType($types, $type);

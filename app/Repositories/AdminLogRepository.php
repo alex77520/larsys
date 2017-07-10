@@ -18,7 +18,7 @@ class AdminLogRepository
         $data['username'] = Auth::guard('admin')->user()->name;
         $data['uri'] = pregReplaceUri($_SERVER['REQUEST_URI']);
         $data['ip'] = getClientIP();
-        $data['expired_at'] = Carbon::parse('+5 day')->toDateTimeString();
+        $data['expired_at'] = Carbon::parse('+3 day')->toDateTimeString();
 
         $log = new AdminLog();
         $data['name'] = $log->getNameByUri($data['uri']);

@@ -9,19 +9,20 @@ use App\Http\Controllers\Controller;
 
 class CateController extends Controller
 {
-    protected $cate_repository;
-    protected $image_repository;
+
+    protected $cateRepository;
+    protected $imageRepository;
 
     public function __construct(CateRepository $cateRepository,
                                 ImageRepository $imageRepository)
     {
-        $this->cate_repository = $cateRepository;
-        $this->image_repository = $imageRepository;
+        $this->cateRepository = $cateRepository;
+        $this->imageRepository = $imageRepository;
     }
 
     public function index()
     {
-        $cates = $this->cate_repository->getAllCates();
+        $cates = $this->cateRepository->getAllCates();
 
         return view('admin.category', compact('cates'));
     }
@@ -32,7 +33,7 @@ class CateController extends Controller
         $self_temps = getTemps(resource_path('views/home/page'));
         $content_temps = getTemps(resource_path('views/home/content'));
 
-        $cates = $this->cate_repository->getAllCates();
+        $cates = $this->cateRepository->getAllCates();
 
         return view('admin.addCate', compact('cates', 'self_temps', 'content_temps'));
     }
@@ -41,21 +42,24 @@ class CateController extends Controller
     {
         $data = $request->except(['icon', 'banner', 'atlas', 'tags']);
 
-        if($cate = $this->cate_repository->createCate($data)) {
+        if ($cate = $this->cateRepository->createCate($data))
+        {
 
             $images = $request->only(['icon', 'banner']);
 
-            $this->image_repository->insertImages($images, $cate->id, 'App\Cate');
+            $this->imageRepository->insertImages($images, $cate->id, 'App\Cate');
 
             $atlas = $request->only(['atlas', 'tags']);
 
-            if (! empty($atlas['atlas'])) {
-                $this->image_repository->addAtlas($atlas['atlas'], $atlas['tags'], $cate->id, 'App\Cate');
-            };
+            if (! empty($atlas['atlas']))
+            {
+                $this->imageRepository->addAtlas($atlas['atlas'], $atlas['tags'], $cate->id, 'App\Cate');
+            }
 
             flash('栏目添加成功！')->success();
 
         } else {
+
             flash('栏目添加失败！')->error();
         }
 
@@ -68,7 +72,7 @@ class CateController extends Controller
         $self_temps = getTemps(resource_path('views/home/page'));
         $content_temps = getTemps(resource_path('views/home/content'));
 
-        $cates = $this->cate_repository->getAllCates();
+        $cates = $this->cateRepository->getAllCates();
 
         $my_cate = $this->cate_repository->findCateBy($cate_id);
         $atlas = $this->cate_repository->findImagesAndTags($my_cate->images, $type = 2);
@@ -80,8 +84,8 @@ class CateController extends Controller
     {
         $data = $request->except(['icon', 'banner', '_token', 'atlas', 'tags']);
 
-        if($cate = $this->cate_repository->updateCate($cate_id, $data)) {
-
+        if ($cate = $this->cate_repository->updateCate($cate_id, $data))
+        {
             $images = $request->only(['icon', 'banner']);
 
             $atlas = $request->only(['atlas', 'tags']);
@@ -91,6 +95,7 @@ class CateController extends Controller
             flash('栏目编辑成功！')->success();
 
         } else {
+
             flash('栏目编辑失败！')->error();
         }
 

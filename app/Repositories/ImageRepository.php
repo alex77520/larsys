@@ -7,6 +7,22 @@ use App\Tag;
 
 class ImageRepository
 {
+    public function delImageBy($image_id)
+    {
+        return Image::destroy($image_id);
+    }
+
+    public function getImagesByType($page, $type = null)
+    {
+        if (is_null($type)) {
+            $images = Image::orderBy('created_at', 'desc')->paginate($page);
+        } else {
+            $images = Image::orderBy('created_at', 'desc')->where('type', $type)->paginate($page);
+        }
+
+        return $images;
+    }
+
     public function createImage($data)
     {
         return Image::create($data);

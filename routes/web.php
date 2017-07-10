@@ -54,6 +54,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('/cate/add', 'CateController@add');
         Route::get('/cate/{cate_id}/edit', 'CateController@edit');
         Route::get('/cate/{cate_id}/del', 'CateController@del');
+
+        // Image
+        Route::get('/image/{type?}', 'ImageController@index');
+        Route::get('/image/{model_id}/edit', 'ImageController@edit');
+        Route::get('/image/{image_id}/del', 'ImageController@del');
     });
 
     // User

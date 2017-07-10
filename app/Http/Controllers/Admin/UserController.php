@@ -10,17 +10,17 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    protected $user_repository;
-    protected $cache;
-    protected $role_repository;
+    protected $userRepository;
+    protected $cacheRepository;
+    protected $roleRepository;
 
     public function __construct(UserRepository $userRepository,
                                 CacheRepository $cacheRepository,
                                 RoleRepository $roleRepository)
     {
-        $this->user_repository = $userRepository;
-        $this->cache = $cacheRepository;
-        $this->role_repository = $roleRepository;
+        $this->userRepository = $userRepository;
+        $this->cacheRepository = $cacheRepository;
+        $this->roleRepository = $roleRepository;
     }
 
     /**
@@ -30,7 +30,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->user_repository->getAllUsersWithRoleName($page = 5);
+        $users = $this->userRepository->getAllUsersWithRoleName($page = 5);
 
         return view('admin.user', compact('users'));
     }
@@ -42,7 +42,7 @@ class UserController extends Controller
      */
     public function add()
     {
-        $roles = $this->role_repository->getAllRolesIdAndName();
+        $roles = $this->roleRepository->getAllRolesIdAndName();
 
         return view('admin.addUser', compact('roles'));
     }
@@ -58,13 +58,13 @@ class UserController extends Controller
         $data = $request->except('roles');
         $data['password'] = bcrypt($request->input('password'));
 
-        $user = $this->user_repository->createUser($data);
+        $user = $this->userRepository->createUser($data);
 
-        if ((!$request->exists('is_admin')) && ($request->exists('roles'))) {
-
+        if ((!$request->exists('is_admin')) && ($request->exists('roles')))
+        {
             $roles = $request->input('roles');
 
-            $this->user_repository->allotRolesFor($user, $roles);
+            $this->userRepository->allotRolesFor($user, $roles);
         }
 
         return redirect('/admin/user');
@@ -78,11 +78,11 @@ class UserController extends Controller
      */
     public function edit($user_id)
     {
-        $user = $this->user_repository->findUserWithRoleIdAndName($user_id);
+        $user = $this->userRepository->findUserWithRoleIdAndName($user_id);
 
-        $roles = $this->user_repository->getAllRolesIdAndName();
+        $roles = $this->userRepository->getAllRolesIdAndName();
 
-        $user_roles_id = $this->user_repository->getUserRolesIdBy($user);
+        $user_roles_id = $this->userRepository->getUserRolesIdBy($user);
 
         return view('admin.editUser', compact('user', 'roles', 'user_roles_id'));
     }
@@ -96,7 +96,7 @@ class UserController extends Controller
      */
     public function doEdit(AdminUserRequest $request, $user_id)
     {
-        $user = $this->user_repository->findUserBy($user_id);
+        $user = $this->userRepository->findUserBy($user_id);
 
         $user->name = $request->input('name');
         $user->email = $request->input('email');
@@ -104,11 +104,11 @@ class UserController extends Controller
         $user->is_admin = $request->exists('is_admin') ? $request->input('is_admin') : 0;
         $user->save();
 
-        if ((! $request->exists('is_admin')) && ($request->exists('roles'))) {
-
+        if ((! $request->exists('is_admin')) && ($request->exists('roles')))
+        {
             $roles = $request->input('roles');
 
-            $this->user_repository->allotRolesFor($user, $roles);
+            $this->userRepository->allotRolesFor($user, $roles);
         }
 
         return redirect('/admin/user');
@@ -122,15 +122,16 @@ class UserController extends Controller
      */
     public function del($user_id)
     {
-        $user = $this->user_repository->findUserBy($user_id);
+        $user = $this->userRepository->findUserBy($user_id);
 
-        if ($user->delete()) {
+        if ($user->delete())
+        {
             flash('删除用户成功！')->success();
 
-            $this->user_repository->delUserRoleRelationsBy($user_id);
+            $this->userRepository->delUserRoleRelationsBy($user_id);
 
             // 仅删除该用户对应的缓存
-            $this->cache->removeCacheBy($user_id);
+            $this->cacheRepository->removeCacheBy($user_id);
         }
 
         return redirect('/admin/user');
@@ -144,7 +145,7 @@ class UserController extends Controller
      */
     public function frozen($user_id)
     {
-        $user = $this->user_repository->findUserBy($user_id);
+        $user = $this->userRepository->findUserBy($user_id);
         $user->status = 0;
 
         if ($user->save()) return redirect('/admin/user');
@@ -158,7 +159,7 @@ class UserController extends Controller
      */
     public function unfrozen($user_id)
     {
-        $user = $this->user_repository->findUserBy($user_id);
+        $user = $this->userRepository->findUserBy($user_id);
         $user->status = 1;
 
         if ($user->save()) return redirect('/admin/user');
