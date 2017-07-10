@@ -34,4 +34,5 @@ class Admin extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'admin_user_role', 'user_id', 'role_id')->withTimestamps();
     }
+    
 }

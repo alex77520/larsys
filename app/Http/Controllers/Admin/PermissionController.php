@@ -25,7 +25,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = $this->permission_repository->getAllPermissions($page = 10);
+        $permissions = $this->permission_repository->getAllPermissions($page = 20);
 
         return view('admin.permission', compact('permissions'));
     }
@@ -37,9 +37,9 @@ class PermissionController extends Controller
      */
     public function add()
     {
-        $permissions = $this->permission_repository->getAllPermissions($page = 0, $returnArray = true);
+        $permissions = $this->permission_repository->getAllPermissions($page = 0);
 
-        $options = buildOptionStr(buildTree($permissions));
+        $options = setDropDownMenu($permissions);
 
         return view('admin.addPermission', compact('options'));
     }
@@ -52,11 +52,11 @@ class PermissionController extends Controller
      */
     public function edit($permission_id)
     {
-        $permissions = $this->permission_repository->getAllPermissions($page = 0, $returnArray = true);
+        $permissions = $this->permission_repository->getAllPermissions($page = 0);
 
         $permission = $this->permission_repository->findPermission($permission_id);
 
-        $options = buildOptionStr(buildTree($permissions), $permission->pid);
+        $options = setDropDownMenu($permissions);
 
         return view('admin.editPermission', compact('permission', 'options'));
     }

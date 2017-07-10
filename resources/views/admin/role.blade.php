@@ -43,7 +43,7 @@
         function layerOpen(roleId) {
             var role = roleId;
             $.ajax({
-                url: "/admin/role/getPermissions/"+ role,
+                url: "/admin/role/getPermissions/" + role,
                 type: 'get',
                 async: false,
                 headers: {

@@ -3,12 +3,18 @@
 namespace  App\Repositories;
 
 use App\Image;
+use App\Tag;
 
 class ImageRepository
 {
     public function createImage($data)
     {
         return Image::create($data);
+    }
+
+    public function createTags($data)
+    {
+        return Tag::create($data);
     }
 
     public function insertImages($data, $model_id, $model_type)
@@ -27,16 +33,40 @@ class ImageRepository
         }
     }
 
-    public function updateImagesByCateId($data, $model_id, $model_type)
+    public function addAtlas($atlas, $tags, $model_id, $model_type)
+    {
+        foreach ($atlas as $key => $item) {
+            // 先插入图片
+            $arr['type'] = 2;
+            $arr['url'] = $item;
+            $arr['model_id'] = $model_id;
+            $arr['model_type'] = $model_type;
+            $image = $this->createImage($arr);
+
+            // 再给到标签
+            $tag['image_id'] = $image->id;
+            $tag['name'] = $tags[$key];
+            $this->createTags($tag);
+        }
+    }
+
+    public function updateImagesByCateId($data, $model_id, $model_type, $atlas)
     {
         $this->delImagesBy($model_id);
 
         $this->insertImages($data, $model_id, $model_type);
+
+        $this->addAtlas($atlas['atlas'], $atlas['tags'], $model_id, $model_type);
     }
 
     public function delImagesBy($model_id)
     {
         return Image::where('model_id', $model_id)->delete();
+    }
+
+    public function findAtlasWithTagBy($image_id)
+    {
+        return Image::with(['tags'])->where('id', $image_id)->first();
     }
 
     public function judgeImage($key)

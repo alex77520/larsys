@@ -207,25 +207,6 @@ class PermissionRepository
     }
 
     /**
-     * 面包屑导航
-     *
-     * @param int $i
-     * @param array $bread
-     * @return array
-     */
-    /*public function breadCrumbs($i = 0, &$bread = [])
-    {
-        $res = Permission::where('is_menu', 1)->find($i);
-
-        if ($res) {
-            $bread[] = $res;
-            $this->breadCrumbs($res->pid, $bread);
-        }
-
-        return $bread;
-    }*/
-
-    /**
      * 通过用户ID找到该用户对应的所有角色
      *
      * @param $user_id
@@ -267,16 +248,14 @@ class PermissionRepository
     {
         if ($page === 0) {
             if ($returnArray === false) {
-                $permissions = Permission::where('status', 1)->orderBy('taxis')->get();
+                return $permissions = Permission::where('status', 1)->orderBy('taxis')->get();
             } else {
-                $permissions = Permission::where('status', 1)->orderBy('taxis')->get()->toArray();
+                return $permissions = Permission::where('status', 1)->orderBy('taxis')->get()->toArray();
             }
         }
 
         if ($returnArray === false) {
-            $permissions = Permission::where('status', 1)->orderBy('taxis')->paginate($page);
+            return $permissions = Permission::where('status', 1)->orderBy('taxis')->paginate($page);
         }
-
-        return $permissions;
     }
 }

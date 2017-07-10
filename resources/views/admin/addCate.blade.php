@@ -29,6 +29,14 @@
                             <input type="text" name="type" value="banners" class="hidden"/>
                         </form>
                     </div>
+                    <!--atlas-->
+                    <div>
+                        <form action="/api/admin/uploadImg" method="post" id="uploadAtlas">
+                            {{ csrf_field() }}
+                            <input type="file" name="uploadImg" class="hidden uploadAtlas"/>
+                            <input type="text" name="type" value="atlas" class="hidden"/>
+                        </form>
+                    </div>
                     <script>
                         $(function () {
                             // 上传图标
@@ -64,6 +72,30 @@
                                     processData: false,
                                     success: function (res) {
                                         $('input[name=banner]').val(res.msg);
+                                    }
+                                })
+                            });
+
+                            // 上传atlas
+                            $('.uploadAtlas').change(function () {
+                                $('#uploadAtlas').trigger('submit');
+                            });
+                            $('#uploadAtlas').on('submit', function (e) {
+                                e.preventDefault();
+                                $.ajax({
+                                    url: '/api/admin/uploadImg',
+                                    type: 'post',
+                                    data: new FormData(this),
+                                    contentType: false,
+                                    cache: false,
+                                    processData: false,
+                                    success: function (res) {
+                                        var str = '<div class="atlas-single">' +
+                                            '<img class="atlas-img" src="'+ res.msg +'" alt="图集子图">' +
+                                            '<input type="text" name="atlas[]" value="'+ res.msg +'" class="hidden">' +
+                                            '<input class="atlas-tag form-control" type="text" name="tags[]" placeholder="添加图片描述">' +
+                                            '</div>';
+                                        $('.atlas-body').append(str);
                                     }
                                 })
                             });
@@ -187,6 +219,16 @@
                             <label for="content" class="col-sm-2 control-label">栏目内容</label>
                             <div class="col-sm-8">
                                 <textarea name="content" type="text/plain" id="content">{{ old('content') ? old('content') : '' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="atlas" class="col-sm-2 control-label">图集</label>
+                            <div class="col-sm-8">
+                                <button type="button" class="btn btn-default btn-success" onclick="$('.uploadAtlas').click()">点击添加图集</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="atlas-body col-sm-8 col-sm-offset-2">
                             </div>
                         </div>
                         <div class="form-group">

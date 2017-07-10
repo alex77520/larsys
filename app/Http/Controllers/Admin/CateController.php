@@ -39,13 +39,19 @@ class CateController extends Controller
 
     public function doAdd(AdminCateRequest $request)
     {
-        $data = $request->except(['icon', 'banner']);
+        $data = $request->except(['icon', 'banner', 'atlas', 'tags']);
 
         if($cate = $this->cate_repository->createCate($data)) {
 
             $images = $request->only(['icon', 'banner']);
 
             $this->image_repository->insertImages($images, $cate->id, 'App\Cate');
+
+            $atlas = $request->only(['atlas', 'tags']);
+
+            if (! empty($atlas['atlas'])) {
+                $this->image_repository->addAtlas($atlas['atlas'], $atlas['tags'], $cate->id, 'App\Cate');
+            };
 
             flash('栏目添加成功！')->success();
 
@@ -65,19 +71,22 @@ class CateController extends Controller
         $cates = $this->cate_repository->getAllCates();
 
         $my_cate = $this->cate_repository->findCateBy($cate_id);
+        $atlas = $this->cate_repository->findImagesAndTags($my_cate->images, $type = 2);
 
-        return view('admin.editCate', compact('self_temps', 'content_temps', 'cates', 'my_cate'));
+        return view('admin.editCate', compact('self_temps', 'content_temps', 'cates', 'my_cate', 'atlas'));
     }
 
     public function doEdit(AdminCateRequest $request, $cate_id)
     {
-        $data = $request->except(['icon', 'banner', '_token']);
+        $data = $request->except(['icon', 'banner', '_token', 'atlas', 'tags']);
 
         if($cate = $this->cate_repository->updateCate($cate_id, $data)) {
 
             $images = $request->only(['icon', 'banner']);
 
-            $this->image_repository->updateImagesByCateId($images, $cate_id, 'App\Cate');
+            $atlas = $request->only(['atlas', 'tags']);
+
+            $this->image_repository->updateImagesByCateId($images, $cate_id, 'App\Cate', $atlas);
 
             flash('栏目编辑成功！')->success();
 
@@ -90,7 +99,7 @@ class CateController extends Controller
 
     public function del($cate_id)
     {
-        if($this->cate_repository->delCateBy($cate_id)) flash('删除栏目成功！')->success();
+        if ($this->cate_repository->delCateBy($cate_id)) flash('删除栏目成功！')->success();
 
         return redirect('admin/cate');
     }

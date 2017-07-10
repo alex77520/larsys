@@ -13,3 +13,19 @@ transition: background-color 5000s ease-in-out 0s;
     font-weight: 500;
 }
 
+.atlas-single {
+    width: 150px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.atlas-img {
+    display: block;
+    width: 100%;
+}
+
+.atlas-tag {
+    margin: 10px 0;
+    width: 100%;
+}
+

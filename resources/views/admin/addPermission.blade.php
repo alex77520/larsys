@@ -27,7 +27,9 @@
                             <div class="col-sm-8">
                                 <select name="pid" class="js-example-basic-single form-control" id="pid" required>
                                     <option value="0">最高层级</option>
-                                    {!! $options !!}
+                                    @foreach($options as $option)
+                                        <option value="{{ $option->id }}">{{ $option->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

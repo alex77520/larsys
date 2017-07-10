@@ -32,6 +32,20 @@ class CateRepository
         return Cate::where('id', $cate_id)->update($data);
     }
 
+    public function findImagesAndTags($images, $type = 2)
+    {
+        $atlas = [];
+        $image_repository = new ImageRepository();
+
+        foreach ($images as $image) {
+            if ($image->type == $type) {
+                $atlas[] = $image_repository->findAtlasWithTagBy($image->id);
+            }
+        }
+
+        return $atlas;
+    }
+
     public function findCateBy($cate_id)
     {
         return Cate::with(['images' => function($query) {
