@@ -13,6 +13,11 @@ class CateController extends Controller
     protected $cateRepository;
     protected $imageRepository;
 
+    /**
+     * CateController constructor.
+     * @param CateRepository $cateRepository
+     * @param ImageRepository $imageRepository
+     */
     public function __construct(CateRepository $cateRepository,
                                 ImageRepository $imageRepository)
     {
@@ -20,6 +25,9 @@ class CateController extends Controller
         $this->imageRepository = $imageRepository;
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $cates = $this->cateRepository->getAllCates();
@@ -27,6 +35,9 @@ class CateController extends Controller
         return view('admin.category', compact('cates'));
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function add()
     {
         // 获取两个目录下全部文件
@@ -38,13 +49,16 @@ class CateController extends Controller
         return view('admin.addCate', compact('cates', 'self_temps', 'content_temps'));
     }
 
+    /**
+     * @param AdminCateRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function doAdd(AdminCateRequest $request)
     {
         $data = $request->except(['icon', 'banner', 'atlas', 'tags']);
 
         if ($cate = $this->cateRepository->createCate($data))
         {
-
             $images = $request->only(['icon', 'banner']);
 
             $this->imageRepository->insertImages($images, $cate->id, 'App\Cate');
@@ -55,7 +69,6 @@ class CateController extends Controller
             {
                 $this->imageRepository->addAtlas($atlas['atlas'], $atlas['tags'], $cate->id, 'App\Cate');
             }
-
             flash('栏目添加成功！')->success();
 
         } else {
@@ -66,6 +79,10 @@ class CateController extends Controller
         return redirect('admin/cate');
     }
 
+    /**
+     * @param $cate_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit($cate_id)
     {
         // 获取两个目录下全部文件
@@ -80,6 +97,11 @@ class CateController extends Controller
         return view('admin.editCate', compact('self_temps', 'content_temps', 'cates', 'my_cate', 'atlas'));
     }
 
+    /**
+     * @param AdminCateRequest $request
+     * @param $cate_id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function doEdit(AdminCateRequest $request, $cate_id)
     {
         $data = $request->except(['icon', 'banner', '_token', 'atlas', 'tags']);
@@ -102,6 +124,10 @@ class CateController extends Controller
         return redirect('admin/cate');
     }
 
+    /**
+     * @param $cate_id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function del($cate_id)
     {
         if ($this->cate_repository->delCateBy($cate_id)) flash('删除栏目成功！')->success();

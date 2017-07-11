@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Permission;
 use App\Role;
-use Illuminate\Support\Facades\DB;
+use DB;
 
 class RoleRepository
 {
@@ -19,6 +19,7 @@ class RoleRepository
      * 删除关联表中role和user之间的联系
      *
      * @param $role_id
+     * @return int
      */
     public function delUserRoleRelationsBy($role_id)
     {
@@ -29,6 +30,7 @@ class RoleRepository
      * 删除关联表中role和permission之间的联系
      *
      * @param $role_id
+     * @return int
      */
     public function delRolePermissionRelationsBy($role_id)
     {

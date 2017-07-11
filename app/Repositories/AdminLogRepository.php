@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\AdminLog;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 
 class AdminLogRepository
 {

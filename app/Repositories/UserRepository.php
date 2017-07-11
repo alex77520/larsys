@@ -7,11 +7,12 @@ use Illuminate\Support\Facades\DB;
 
 class UserRepository
 {
-    protected $cache;
+
+    protected $cacheRepository;
 
     public function __construct(CacheRepository $cacheRepository)
     {
-        $this->cache = $cacheRepository;
+        $this->cacheRepository = $cacheRepository;
     }
 
     /**
@@ -22,7 +23,9 @@ class UserRepository
      */
     public function delUserRoleRelationsBy($user_id)
     {
-        return DB::table('admin_user_role')->where('user_id', '=', $user_id)->delete();
+        return DB::table('admin_user_role')
+            ->where('user_id', '=', $user_id)
+            ->delete();
     }
 
     /**
@@ -75,7 +78,7 @@ class UserRepository
      */
     public function findUserWithRoleIdAndName($user_id)
     {
-        return $user = Admin::with(['roles' => function($query) {
+        return $user = Admin::with(['roles' => function ($query) {
             return $query->select('role_id', 'name');
         }])->find($user_id);
     }
@@ -103,6 +106,6 @@ class UserRepository
 
         $user->roles()->attach($roles);
 
-        $this->cache->removeCacheBy($user->id);
+        $this->cacheRepository->removeCacheBy($user->id);
     }
 }

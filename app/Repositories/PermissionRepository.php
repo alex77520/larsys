@@ -5,16 +5,16 @@ namespace App\Repositories;
 use App\Admin;
 use App\Permission;
 use App\Role;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Auth;
+use DB;
 
 class PermissionRepository
 {
-    protected $cache;
+    protected $cacheRepository;
 
     public function __construct(CacheRepository $cacheRepository)
     {
-        $this->cache = $cacheRepository;
+        $this->cacheRepository = $cacheRepository;
     }
 
     /**
@@ -28,7 +28,7 @@ class PermissionRepository
         $menu_name = 'menus_' . $user->id;
         $uri_name = 'uris_' . $user->id;
 
-        if (! $this->cache->hashFieldExist(env('REDIS_ADMIN_HASH_KEY'), $menu_name))
+        if (! $this->cacheRepository->hashFieldExist(env('REDIS_ADMIN_HASH_KEY'), $menu_name))
             $this->cacheAllMenusOrPartMenus($user, $menu_name, $uri_name);
     }
 
@@ -51,7 +51,7 @@ class PermissionRepository
      */
     public function createPermission($data)
     {
-        $this->cache->removeAllCache();
+        $this->cacheRepository->removeAllCache();
 
         return Permission::create($data);
     }
@@ -66,7 +66,7 @@ class PermissionRepository
     {
         $this->delRolePermissionRelationsBy($permission_id);
 
-        $this->cache->removeAllCache();
+        $this->cacheRepository->removeAllCache();
 
         return Permission::destroy($permission_id);
     }
@@ -94,8 +94,8 @@ class PermissionRepository
         // buildTree->App/Helpers/helpers.php
         $admin_menus = buildTree($admin_menus);
 
-        $this->cache->hashSet(env('REDIS_ADMIN_HASH_KEY'), $menu_name, serialize($admin_menus));
-        $this->cache->hashSet(env('REDIS_ADMIN_HASH_KEY'), $uri_name, serialize($admin_uris));
+        $this->cacheRepository->hashSet(env('REDIS_ADMIN_HASH_KEY'), $menu_name, serialize($admin_menus));
+        $this->cacheRepository->hashSet(env('REDIS_ADMIN_HASH_KEY'), $uri_name, serialize($admin_uris));
     }
 
     /**

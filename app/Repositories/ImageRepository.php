@@ -1,12 +1,13 @@
 <?php
 
-namespace  App\Repositories;
+namespace App\Repositories;
 
 use App\Image;
 use App\Tag;
 
 class ImageRepository
 {
+
     public function delImageBy($image_id)
     {
         return Image::destroy($image_id);
@@ -87,7 +88,7 @@ class ImageRepository
 
     public function judgeImage($key)
     {
-        switch($key) {
+        switch ($key) {
             case 'icon':
                 $type = 0;
                 break;

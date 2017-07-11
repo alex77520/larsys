@@ -10,13 +10,25 @@ use App\Http\Controllers\Controller;
 
 class RoleController extends Controller
 {
-    protected $roleRepository;
-    protected $cache;
 
+    /**
+     * @var RoleRepository
+     */
+    private $roleRepository;
+    /**
+     * @var CacheRepository
+     */
+    private $cacheRepository;
+
+    /**
+     * RoleController constructor.
+     * @param RoleRepository $roleRepository
+     * @param CacheRepository $cacheRepository
+     */
     public function __construct(RoleRepository $roleRepository, CacheRepository $cacheRepository)
     {
         $this->roleRepository = $roleRepository;
-        $this->cache = $cacheRepository;
+        $this->cacheRepository = $cacheRepository;
     }
 
     /**
@@ -26,7 +38,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = $this->roleRepository->getAllRoles($page = 5);
+        $page = 5;
+        $roles = $this->roleRepository->getAllRoles($page);
 
         return view('admin.role', compact('roles'));
     }
@@ -102,7 +115,7 @@ class RoleController extends Controller
             flash('编辑角色成功！')->success();
 
         // 删除权限缓存
-        $this->cache->removeAllCache();
+        $this->cacheRepository->removeAllCache();
 
         return redirect('/admin/role');
     }
