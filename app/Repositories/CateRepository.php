@@ -6,34 +6,52 @@ use App\Cate;
 
 class CateRepository
 {
+
+    /**
+     * @return array
+     */
     public function getAllCates()
     {
         $cates = Cate::select('id', 'name', 'status', 'model', 'pid', 'level', 'taxis', 'created_at')
             ->orderBy('taxis')
             ->get();
 
-        /*foreach ($cates as $cate) {
-            $cate->model = $cate->getModelName($cate->model);
-        }*/
-
         return $cates = setDropDownMenu($cates);
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function createCate($data)
     {
         return Cate::create($data);
     }
 
+    /**
+     * @param $cate_id
+     * @return int
+     */
     public function delCateBy($cate_id)
     {
         return Cate::destroy($cate_id);
     }
 
+    /**
+     * @param $cate_id
+     * @param $data
+     * @return mixed
+     */
     public function updateCate($cate_id, $data)
     {
         return Cate::where('id', $cate_id)->update($data);
     }
 
+    /**
+     * @param $images
+     * @param int $type
+     * @return array
+     */
     public function findImagesAndTags($images, $type = 2)
     {
         $atlas = [];
@@ -50,6 +68,10 @@ class CateRepository
         return $atlas;
     }
 
+    /**
+     * @param $cate_id
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
+     */
     public function findCateBy($cate_id)
     {
         return Cate::with(['images' => function($query) {

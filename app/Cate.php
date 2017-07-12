@@ -22,6 +22,16 @@ class Cate extends Model
         return $this->morphMany('App\Image', 'model');
     }
 
+    public function articles()
+    {
+        return $this->hasMany('App\Content', 'cate_id');
+    }
+
+    public function goods()
+    {
+        return $this->hasMany('App\Goods', 'cate_id');
+    }
+
     public function getModelName($model)
     {
         $model_arr = [

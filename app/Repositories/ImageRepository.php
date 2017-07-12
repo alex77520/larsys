@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Image;
-use App\Tag;
+use App\ImageTag;
 
 class ImageRepository
 {
@@ -31,7 +31,7 @@ class ImageRepository
 
     public function createTags($data)
     {
-        return Tag::create($data);
+        return ImageTag::create($data);
     }
 
     public function insertImages($data, $model_id, $model_type)

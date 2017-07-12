@@ -24,7 +24,7 @@ class Image extends Model
 
     public function tags()
     {
-        return $this->hasOne('App\Tag', 'image_id');
+        return $this->hasOne('App\ImageTag', 'image_id');
     }
 
     public function getImgType($type)

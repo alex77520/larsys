@@ -41,7 +41,8 @@
                                 <td>{{ date_format($image->created_at, 'Y-m-d') }}</td>
                                 <td>{{ date_format($image->updated_at, 'Y-m-d') }}</td>
                                 <td>
-                                    <a type="button" class="btn-xs btn-primary" href="{{ url('/admin/image/'. $image->model_id .'/edit?model=' . class_basename($image->model_type)) }}">图片位置</a>
+                                    <a type="button" class="btn-xs btn-primary"
+                                       href="{{ url('/admin/image/'. $image->model_id .'/edit?model=' . class_basename($image->model_type)) }}">模型</a>
                                     <a type="button" class="btn-xs btn-danger" href="{{ url('/admin/image/'. $image->id .'/del') }}">删除</a>
                                 </td>
                             </tr>
