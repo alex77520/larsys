@@ -11,7 +11,6 @@
                     <h4>添加栏目</h4>
                 </div>
                 <div class="panel-body">
-
                     {{--上传图片的真实表单位置--}}
                     <!--icons-->
                     <div>
@@ -45,16 +44,19 @@
                             });
                             $('#uploadIcon').on('submit', function (e) {
                                 e.preventDefault();
-                                 $.ajax({
-                                 url: '/api/admin/uploadImg',
-                                 type: 'post',
-                                 data: new FormData(this),
-                                 contentType: false,
-                                 cache: false,
-                                 processData: false,
-                                 success: function (res) {
-                                     $('input[name=icon]').val(res.msg);
-                                 }})
+                                $.ajax({
+                                    url: '/api/admin/uploadImg',
+                                    type: 'post',
+                                    data: new FormData(this),
+                                    contentType: false,
+                                    cache: false,
+                                    processData: false,
+                                    success: function (res) {
+                                        $('input[name=icon]').val(res.msg);
+                                        var str = '<img src="'+ res.msg +'" alt="'+ res.msg +'" width="40px" />';
+                                        $('.icon-img').html(str);
+                                    }
+                                })
                             });
 
                             // 上传banner
@@ -72,6 +74,8 @@
                                     processData: false,
                                     success: function (res) {
                                         $('input[name=banner]').val(res.msg);
+                                        var str = '<img src="'+ res.msg +'" alt="'+ res.msg +'" width="40px" />';
+                                        $('.banner-img').html(str);
                                     }
                                 })
                             });
@@ -93,7 +97,7 @@
                                         var str = '<div class="atlas-single">' +
                                             '<img class="atlas-img" src="'+ res.msg +'" alt="图集子图">' +
                                             '<input type="text" name="atlas[]" value="'+ res.msg +'" class="hidden">' +
-                                            '<input class="atlas-tag form-control" type="text" name="tags[]" placeholder="添加图片描述">' +
+                                            '<input class="atlas-tag form-control" type="text" name="ImageTags[]" placeholder="添加图片描述">' +
                                             '</div>';
                                         $('.atlas-body').append(str);
                                     }
@@ -150,23 +154,25 @@
                         </div>
                         <div class="form-group">
                             <label for="icon" class="col-sm-2 control-label">栏目图标</label>
-                            <div class="col-sm-6">
+                            <div class="col-sm-5">
                                 <input name="icon" type="text" class="form-control"
                                        value="{{ old('icon') ? old('icon') : '' }}"
                                        id="icon" placeholder="请选择栏目的图标">
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-1 icon-img"></div>
+                            <div class="col-sm-2">
                                 <button class="btn btn-primary" type="button" onclick="$('.uploadIcon').click();">选择图片</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="banner" class="col-sm-2 control-label">栏目大图</label>
-                            <div class="col-sm-6">
+                            <div class="col-sm-5">
                                 <input name="banner" type="text" class="form-control"
                                        value="{{ old('banner') ? old('banner') : '' }}"
                                        id="banner" placeholder="请选择栏目的Banner">
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-1 banner-img"></div>
+                            <div class="col-sm-2">
                                 <button class="btn btn-primary" type="button" onclick="$('.uploadBanner').click();">选择图片</button>
                             </div>
                         </div>
@@ -235,7 +241,7 @@
                             <label for="taxis" class="col-sm-2 control-label">排序</label>
                             <div class="col-sm-2">
                                 <input name="taxis" type="text" class="form-control" id="taxis"
-                                       value="{{ old('taxis') ? old('taxis') : '' }}" placeholder="排序">
+                                       value="{{ old('taxis') ? old('taxis') : 0 }}" placeholder="排序">
                             </div>
                         </div>
                         <div class="form-group">

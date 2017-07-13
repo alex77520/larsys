@@ -34,6 +34,26 @@ class ImageRepository
         return ImageTag::create($data);
     }
 
+    /**
+     * @param $images
+     * @param int $type
+     * @return array
+     */
+    public function findAtlasAndTags($images, $type = 2)
+    {
+        $atlas = [];
+
+        foreach ($images as $image)
+        {
+            if ($image->type == $type)
+            {
+                $atlas[] = $this->findAtlasWithTagBy($image->id);
+            }
+        }
+
+        return $atlas;
+    }
+
     public function insertImages($data, $model_id, $model_type)
     {
         foreach ($data as $key => $value) {
@@ -67,13 +87,42 @@ class ImageRepository
         }
     }
 
-    public function updateImagesByCateId($data, $model_id, $model_type, $atlas)
+    public function updateImagesByCateId($data, $atlas, $model_id, $model_type)
     {
         $this->delImagesBy($model_id);
 
         $this->insertImages($data, $model_id, $model_type);
 
-        $this->addAtlas($atlas['atlas'], $atlas['tags'], $model_id, $model_type);
+        if (! empty($atlas['atlas'])) $this->addAtlas($atlas['atlas'], $atlas['tags'], $model_id, $model_type);
+    }
+
+    /**
+     * @param $request
+     * @param $model_type
+     * @param $model_id
+     */
+    public function createImagesWithModelAndRequest($request, $model_type, $model_id)
+    {
+        $images = $request->only(['icon', 'banner']);
+
+        $this->insertImages($images, $model_id, $model_type);
+
+        $atlas = $request->only(['atlas', 'ImageTags']);
+
+        if (! empty($atlas['atlas'])) {
+
+            $this->addAtlas($atlas['atlas'], $atlas['ImageTags'], $model_id, $model_type);
+
+        }
+    }
+
+    public function updateImagesWithModelAndRequest($request, $model_type, $model_id)
+    {
+        $images = $request->only(['icon', 'banner']);
+
+        $atlas = $request->only(['atlas', 'ImageTags']);
+
+        $this->updateImagesByCateId($images, $atlas, $model_id, $model_type);
     }
 
     public function delImagesBy($model_id)

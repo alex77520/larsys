@@ -435,7 +435,7 @@ UE.I18N['en'] = {
     'template':{
         'static':{
             'lang_template_bkcolor':'Background Color',
-            'lang_template_clear' : 'Keep Content',
+            'lang_template_clear' : 'Keep Article',
             'lang_template_select':'Select Template'
         },
         'blank':"Blank",

@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // 上传图片
 Route::post('/admin/uploadImg', 'Admin\UploadController@uploadImg');
+Route::post('/admin/uploadFile', 'Admin\UploadController@uploadFile');

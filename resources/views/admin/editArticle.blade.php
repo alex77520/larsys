@@ -8,7 +8,7 @@
         <div class="row">
             <div class="panel">
                 <div class="panel-heading">
-                    <h4>编辑栏目</h4>
+                    <h4>添加文章</h4>
                 </div>
                 <div class="panel-body">
 
@@ -37,6 +37,15 @@
                             <input type="text" name="type" value="atlas" class="hidden"/>
                         </form>
                     </div>
+                    <!--attachment-->
+                    <div>
+                        <form action="/api/admin/uploadFile" method="post" id="uploadFile">
+                            {{ csrf_field() }}
+                            <input type="file" name="uploadFile" class="hidden uploadFile"/>
+                            <input type="text" name="type" value="attachments" class="hidden"/>
+                        </form>
+                    </div>
+
                     <script>
                         $(function () {
                             // 上传图标
@@ -104,72 +113,93 @@
                                     }
                                 })
                             });
+
+                            // 上传附件
+                            $('.uploadFile').change(function () {
+                                $('#uploadFile').trigger('submit');
+                            });
+                            $('#uploadFile').on('submit', function (e) {
+                                e.preventDefault();
+                                $.ajax({
+                                    url: '/api/admin/uploadFile',
+                                    type: 'post',
+                                    data: new FormData(this),
+                                    contentType: false,
+                                    cache: false,
+                                    processData: false,
+                                    success: function (res) {
+                                        $('input[name=attachment]').val(res.msg);
+                                    }})
+                            });
                         })
                     </script>
 
-                    <form class="form-horizontal" method="post" action="{{ url('/admin/cate/doEdit/' . $my_cate->id) }}">
+                    <form class="form-horizontal" method="post" action="{{ url('/admin/article/'. $article_id .'/doEdit') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">栏目名称</label>
+                            <label for="title" class="col-sm-2 control-label">文章标题</label>
                             <div class="col-sm-8">
-                                <input name="name" type="text" class="form-control" id="name"
-                                       value="{{ old('name') ? old('name') : $my_cate->name }}" placeholder="请输入名称" required>
+                                <input name="title" type="text" class="form-control" id="title"
+                                       value="{{ old('title') ? old('title') : $article->title }}" placeholder="请输入文章名称" required>
                             </div>
-                            @if ($errors->has('name'))
+                            @if ($errors->has('title'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('name') }}</strong>
+                                    <strong>{{ $errors->first('title') }}</strong>
                                 </span>
                             @endif
                         </div>
                         <div class="form-group">
-                            <label for="pid" class="col-sm-2 control-label">所属栏目</label>
-                            <div class="col-sm-4">
-                                <select name="pid" class="js-example-basic-single form-control pid-dropdown" id="pid" required>
-                                    <option value="0">最高层级</option>
-                                    @foreach($cates as $cate)
-                                        <option value="{{ $cate->id }}" {{ $my_cate->pid == $cate->id ? 'selected' : ''}}>
-                                            {{ str_repeat('—', 2 * $cate->level) . $cate->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="level" class="col-sm-2 control-label">所处层级</label>
-                            <div class="col-sm-3">
-                                <input name="level" type="text" class="form-control" id="level"
-                                       value="{{ old('level') ? old('level') : $my_cate->level }}" placeholder="请输入栏目的LEVEL,最高为0" required>
-                            </div>
-                            @if ($errors->has('level'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('level') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label for="status" class="col-sm-2 control-label">栏目状态</label>
-                            <div class="col-sm-2">
-                                <select name="status" class="js-example-basic-single form-control pid-dropdown" id="status" required>
-                                    <option value="1" {{ $my_cate->status == 1 ? 'selected' : '' }}>显示</option>
-                                    <option value="0" {{ $my_cate->status == 0 ? 'selected' : '' }}>隐藏</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="icon" class="col-sm-2 control-label">栏目图标</label>
+                            <label for="author" class="col-sm-2 control-label">文章作者</label>
                             <div class="col-sm-6">
-                                @if(isset($my_cate->images[0]))
+                                <input name="author" type="text" class="form-control" id="author"
+                                       value="{{ old('author') ? old('author') : $article->author }}" placeholder="请输入作者名称" required>
+                            </div>
+                            @if ($errors->has('author'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('author') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label for="comefrom" class="col-sm-2 control-label">文章来源</label>
+                            <div class="col-sm-6">
+                                <input name="comefrom" type="text" class="form-control" id="comefrom"
+                                       value="{{ old('comefrom') ? old('comefrom') : $article->comefrom }}" placeholder="请输入来源">
+                            </div>
+                            @if ($errors->has('comefrom'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('comefrom') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label for="tag" class="col-sm-2 control-label">文章标签</label>
+                            <div class="col-sm-6">
+                                <input name="tag" type="text" class="form-control" id="tag"
+                                       value="{{ old('tag') ? old('tag') : $article->tag }}" placeholder="请输入文章标签">
+                            </div>
+                            @if ($errors->has('tag'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('tag') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label for="icon" class="col-sm-2 control-label">文章图标</label>
+                            <div class="col-sm-6">
+                                @if(isset($article->images[0]))
                                     <input name="icon" type="text" class="form-control"
-                                           value="{{ old('icon') ? old('icon') : $my_cate->images[0]->url }}"
-                                           id="icon" placeholder="请选择栏目的图标">
+                                           value="{{ old('icon') ? old('icon') : $article->images[0]->url }}"
+                                           id="icon" placeholder="请选择文章的图标">
                                 @else
                                     <input name="icon" type="text" class="form-control"
                                            value="{{ old('icon') ? old('icon') : '' }}"
-                                           id="icon" placeholder="请选择栏目的图标">
+                                           id="icon" placeholder="请选择文章的图标">
                                 @endif
                             </div>
                             <div class="col-sm-1 icon-img">
-                                @if(isset($my_cate->images[0]))
-                                <img src="{{ $my_cate->images[0]->url }}" alt="{{ $my_cate->images[0]->url }}" width="40px" />
+                                @if(isset($article->images[0]))
+                                    <img src="{{ $article->images[0]->url }}" alt="{{ $article->images[0]->url }}" width="40px" />
                                 @endif
                             </div>
                             <div class="col-sm-2">
@@ -177,21 +207,21 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="banner" class="col-sm-2 control-label">栏目大图</label>
+                            <label for="banner" class="col-sm-2 control-label">文章大图</label>
                             <div class="col-sm-6">
-                                @if(isset($my_cate->images[1]))
-                                    <input name="banner" type="text" class="form-control"
-                                           value="{{ old('banner') ? old('banner') : $my_cate->images[1]->url }}"
-                                           id="banner" placeholder="请选择栏目的Banner">
+                                @if(isset($article->images[1]))
+                                    <input name="icon" type="text" class="form-control"
+                                           value="{{ old('banner') ? old('banner') : $article->images[1]->url }}"
+                                           id="icon" placeholder="请选择文章的Banner">
                                 @else
-                                    <input name="banner" type="text" class="form-control"
+                                    <input name="icon" type="text" class="form-control"
                                            value="{{ old('banner') ? old('banner') : '' }}"
-                                           id="banner" placeholder="请选择栏目的Banner">
+                                           id="icon" placeholder="请选择文章的Banner">
                                 @endif
                             </div>
                             <div class="col-sm-1 banner-img">
-                                @if(isset($my_cate->images[1]))
-                                    <img src="{{ $my_cate->images[1]->url }}" alt="{{ $my_cate->images[1]->url }}" width="40px" />
+                                @if(isset($article->images[1]))
+                                    <img src="{{ $article->images[1]->url }}" alt="{{ $article->images[1]->url }}" width="40px" />
                                 @endif
                             </div>
                             <div class="col-sm-2">
@@ -199,45 +229,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="model" class="col-sm-2 control-label">栏目模型</label>
-                            <div class="col-sm-4">
-                                <select name="model" class="js-example-basic-single form-control model-dropdown" id="model" required>
-                                    @foreach($models = $cates[0]->getModelName(null) as $key => $model)
-                                        <option value="{{ $key }}" {{ $my_cate->model == $key ? 'selected' : '' }} >{{ $model }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group self-temp">
-                            <label for="self_temp" class="col-sm-2 control-label">栏目模板</label>
-                            <div class="col-sm-4">
-                                <select name="self_temp" class="js-example-basic-single form-control self-dropdown" id="self_temp">
-                                    <option value="">无</option>
-                                    @foreach($self_temps as $self_temp)
-                                        <option value="{{ $self_temp['prefix'] }}" {{ $my_cate->self_temp == $self_temp['prefix'] ? 'selected' : '' }}>{{ $self_temp['file'] }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group article-temp">
-                            <label for="content_temp" class="col-sm-2 control-label">内容模板</label>
-                            <div class="col-sm-4">
-                                <select name="content_temp" class="js-example-basic-single form-control content-dropdown" id="content_temp">
-                                    <option value="">无</option>
-                                    @foreach($content_temps as $content_temp)
-                                        <option value="{{ $content_temp['prefix'] }}"
-                                                {{ $my_cate->content_temp == $content_temp['prefix'] ? 'selected' : '' }}
-                                        >{{ $content_temp['file'] }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="digest" class="col-sm-2 control-label">栏目简介</label>
+                            <label for="digest" class="col-sm-2 control-label">文章简介</label>
                             <div class="col-sm-8">
-                                <textarea name="digest" rows="3"
-                                          class="form-control" id="digest"
-                                          placeholder="请输入简介">{{ old('digest') ? old('digest') : $my_cate->digest }}
+                                <textarea name="digest" rows="3" class="form-control" id="digest" placeholder="请输入文章简介">{{ old('digest') ? old('digest') : $article->digest }}
                                 </textarea>
                             </div>
                             @if($errors->has('digest'))
@@ -247,9 +241,20 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label for="content" class="col-sm-2 control-label">栏目内容</label>
+                            <label for="content" class="col-sm-2 control-label">文章内容</label>
                             <div class="col-sm-8">
-                                <textarea name="content" type="text/plain" id="content">{{ old('content') ? old('content') : $my_cate->content }}</textarea>
+                                <textarea name="content" type="text/plain" id="content">{{ old('content') ? old('content') : $article->content }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="attachment" class="col-sm-2 control-label">文章附件</label>
+                            <div class="col-sm-6">
+                                <input name="attachment" type="text" class="form-control"
+                                       value="{{ old('attachment') ? old('attachment') : $article->attachment }}"
+                                       id="attachment" placeholder="请选择附件">
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary" type="button" onclick="$('.uploadFile').click();">选择文件</button>
                             </div>
                         </div>
                         <div class="form-group">
@@ -270,10 +275,38 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="is_top" class="col-sm-2 control-label">置顶</label>
+                            <div class="col-sm-2">
+                                <select name="is_top" class="js-example-basic-single form-control pid-dropdown" id="is_top" required>
+                                    <option value="F" {{ $article->is_top === 'F' ? 'selected' : ''}}>否</option>
+                                    <option value="T" {{ $article->is_top === 'T' ? 'selected' : ''}}>是</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="is_hot" class="col-sm-2 control-label">热门</label>
+                            <div class="col-sm-2">
+                                <select name="is_hot" class="js-example-basic-single form-control pid-dropdown" id="is_hot" required>
+                                    <option value="F" {{ $article->is_hot === 'F' ? 'selected' : ''}}>否</option>
+                                    <option value="T" {{ $article->is_hot === 'T' ? 'selected' : ''}}>是</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="taxis" class="col-sm-2 control-label">排序</label>
                             <div class="col-sm-2">
                                 <input name="taxis" type="text" class="form-control" id="taxis"
-                                       value="{{ old('taxis') ? old('taxis') : $my_cate->taxis }}" placeholder="排序">
+                                       value="{{ old('taxis') ? old('taxis') : $article->taxis }}" placeholder="排序">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cate_id" class="col-sm-2 control-label">改变文章分类</label>
+                            <div class="col-sm-2">
+                                <select name="cate_id" class="js-example-basic-single form-control pid-dropdown" id="cate_id">
+                                    @foreach($cates as $cate)
+                                        <option value="{{ $cate->id }}" {{ $cate->id == $article->cate_id ? 'selected' : ''}}>{{ $cate->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -290,10 +323,7 @@
                         });
 
                         $(function () {
-                            $(".pid-dropdown").select2();
-                            $(".model-dropdown").select2();
-                            $(".self-dropdown").select2();
-                            $(".content-dropdown").select2();
+
                         })
                     </script>
                 </div>

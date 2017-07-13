@@ -7,6 +7,13 @@ use App\Cate;
 class CateRepository
 {
 
+    public function getCatesByModelId($model_id)
+    {
+        $cates = Cate::where('model', $model_id)->orderBy('taxis')->get();
+
+        return $cates;
+    }
+
     /**
      * @return array
      */
@@ -72,7 +79,7 @@ class CateRepository
      * @param $cate_id
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
      */
-    public function findCateBy($cate_id)
+    public function findCateWithImagesBy($cate_id)
     {
         return Cate::with(['images' => function($query) {
             return $query->orderBy('type', 'asc');

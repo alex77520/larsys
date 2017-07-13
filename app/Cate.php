@@ -24,7 +24,7 @@ class Cate extends Model
 
     public function articles()
     {
-        return $this->hasMany('App\Content', 'cate_id');
+        return $this->hasMany('App\Article', 'cate_id');
     }
 
     public function goods()

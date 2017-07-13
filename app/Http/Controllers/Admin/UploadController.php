@@ -24,4 +24,14 @@ class UploadController extends Controller
 
         return response()->json(['msg' => '上传失败']);
     }
+
+    public function uploadFile(Request $request)
+    {
+        if ($file = $this->upload->uploadFile($request)) {
+
+            return response()->json(['msg' => '/storage/' . $file]);
+        };
+
+        return response()->json(['msg' => '上传失败']);
+    }
 }

@@ -55,21 +55,13 @@ class CateController extends Controller
      */
     public function doAdd(AdminCateRequest $request)
     {
-        $data = $request->except(['icon', 'banner', 'atlas', 'tags']);
+        $data = $request->except(['icon', 'banner', 'atlas', 'ImageTags']);
 
         if ($cate = $this->cateRepository->createCate($data)) {
 
-            $images = $request->only(['icon', 'banner']);
+            $this->imageRepository
+                ->createImagesWithModelAndRequest($request, $model_type = 'App\Cate', $model_id = $cate->id);
 
-            $this->imageRepository->insertImages($images, $cate->id, 'App\Cate');
-
-            $atlas = $request->only(['atlas', 'tags']);
-
-            if (! empty($atlas['atlas'])) {
-
-                $this->imageRepository->addAtlas($atlas['atlas'], $atlas['tags'], $cate->id, 'App\Cate');
-
-            }
             flash('栏目添加成功！')->success();
 
         } else {
@@ -92,8 +84,8 @@ class CateController extends Controller
 
         $cates = $this->cateRepository->getAllCates();
 
-        $my_cate = $this->cateRepository->findCateBy($cate_id);
-        $atlas = $this->cateRepository->findImagesAndTags($my_cate->images, $type = 2);
+        $my_cate = $this->cateRepository->findCateWithImagesBy($cate_id);
+        $atlas = $this->imageRepository->findAtlasAndTags($my_cate->images);
 
         return view('admin.editCate', compact('self_temps', 'content_temps', 'cates', 'my_cate', 'atlas'));
     }
@@ -105,15 +97,12 @@ class CateController extends Controller
      */
     public function doEdit(AdminCateRequest $request, $cate_id)
     {
-        $data = $request->except(['icon', 'banner', '_token', 'atlas', 'tags']);
+        $data = $request->except(['icon', 'banner', '_token', 'atlas', 'ImageTags']);
 
-        if ($cate = $this->cateRepository->updateCate($cate_id, $data)) {
+        if ($this->cateRepository->updateCate($cate_id, $data)) {
 
-            $images = $request->only(['icon', 'banner']);
-
-            $atlas = $request->only(['atlas', 'tags']);
-
-            $this->image_repository->updateImagesByCateId($images, $cate_id, 'App\Cate', $atlas);
+            $this->imageRepository
+                ->updateImagesWithModelAndRequest($request, $model_type = 'App\Cate', $model_id = $cate_id);
 
             flash('栏目编辑成功！')->success();
 

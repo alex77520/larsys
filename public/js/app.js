@@ -548,7 +548,7 @@ module.exports = function xhrAdapter(config) {
         data: responseData,
         // IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)
         status: request.status === 1223 ? 204 : request.status,
-        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+        statusText: request.status === 1223 ? 'No Article' : request.statusText,
         headers: responseHeaders,
         config: config,
         request: request
@@ -598,7 +598,7 @@ module.exports = function xhrAdapter(config) {
     if ('setRequestHeader' in request) {
       utils.forEach(requestHeaders, function setRequestHeader(val, key) {
         if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
-          // Remove Content-Type if data is undefined
+          // Remove Article-Type if data is undefined
           delete requestHeaders[key];
         } else {
           // Otherwise add header to the request
@@ -1574,7 +1574,7 @@ var utils = __webpack_require__(0);
  *
  * ```
  * Date: Wed, 27 Aug 2014 08:58:49 GMT
- * Content-Type: application/json
+ * Article-Type: application/json
  * Connection: keep-alive
  * Transfer-Encoding: chunked
  * ```
@@ -39402,7 +39402,7 @@ var canBeLeftOpenTag = makeMap(
 );
 
 // HTML5 tags https://html.spec.whatwg.org/multipage/indices.html#elements-3
-// Phrasing Content https://html.spec.whatwg.org/multipage/dom.html#phrasing-content
+// Phrasing Article https://html.spec.whatwg.org/multipage/dom.html#phrasing-content
 var isNonPhrasingTag = makeMap(
   'address,article,aside,base,blockquote,body,caption,col,colgroup,dd,' +
   'details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,' +
@@ -41172,7 +41172,7 @@ function createCompiler (baseOptions) {
         if (e.toString().match(/unsafe-eval|CSP/)) {
           warn(
             'It seems you are using the standalone build of Vue.js in an ' +
-            'environment with Content Security Policy that prohibits unsafe-eval. ' +
+            'environment with Article Security Policy that prohibits unsafe-eval. ' +
             'The template compiler cannot work in this environment. Consider ' +
             'relaxing the policy to allow unsafe-eval or pre-compiling your ' +
             'templates into render functions.'

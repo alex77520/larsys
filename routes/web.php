@@ -26,7 +26,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     // 需要判断是否登录和验证权限的路由
     Route::group(['middleware' => ['auth.admin', 'auth.permission', 'admin.log']], function () {
         Route::get('/', 'IndexController@index');
-        Route::get('/article', 'ArticleController@index');
+
+        // Article
+        Route::get('/article/{cate_id?}', 'ArticleController@index');
+        Route::get('/article/{cate_id}/add', 'ArticleController@add');
+        Route::get('/article/{article_id}/edit', 'ArticleController@edit');
+        Route::get('/article/{article_id}/del', 'ArticleController@del');
 
         // User
         Route::get('/user', 'UserController@index');
@@ -60,6 +65,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('/image/{model_id}/edit', 'ImageController@edit');
         Route::get('/image/{image_id}/del', 'ImageController@del');
     });
+
+    // Article
+    Route::post('/article/{cate_id}/doAdd', 'ArticleController@doAdd');
+    Route::post('/article/{cate_id}/doEdit', 'ArticleController@doEdit');
 
     // User
     Route::post('/user/doAdd', 'UserController@doAdd');
