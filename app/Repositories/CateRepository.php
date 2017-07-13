@@ -7,9 +7,9 @@ use App\Cate;
 class CateRepository
 {
 
-    public function getCatesByModelId($model_id)
+    public function getCatesByModel($model)
     {
-        $cates = Cate::where('model', $model_id)->orderBy('taxis')->get();
+        $cates = Cate::where('model', $model)->orderBy('taxis')->get();
 
         return $cates;
     }

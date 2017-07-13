@@ -33,6 +33,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('/article/{article_id}/edit', 'ArticleController@edit');
         Route::get('/article/{article_id}/del', 'ArticleController@del');
 
+        // Goods
+        Route::get('/goods/{cate_id?}', 'GoodsController@index');
+        Route::get('/goods/{cate_id}/add', 'GoodsController@add');
+        Route::get('/goods/{goods_id}/edit', 'GoodsController@edit');
+        Route::get('/goods/{goods_id}/del', 'GoodsController@del');
+
         // User
         Route::get('/user', 'UserController@index');
         Route::get('/user/add', 'UserController@add');
@@ -68,7 +74,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
 
     // Article
     Route::post('/article/{cate_id}/doAdd', 'ArticleController@doAdd');
-    Route::post('/article/{cate_id}/doEdit', 'ArticleController@doEdit');
+    Route::post('/article/{article_id}/doEdit', 'ArticleController@doEdit');
+
+    // Goods
+    Route::post('/goods/{cate_id}/doAdd', 'ArticleController@doAdd');
+    Route::post('/goods/{goods_id}/doEdit', 'ArticleController@doEdit');
 
     // User
     Route::post('/user/doAdd', 'UserController@doAdd');

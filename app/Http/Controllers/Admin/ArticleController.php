@@ -36,7 +36,7 @@ class ArticleController extends Controller
     public function index($cate_id = null)
     {
         // 拿到所有文章列表的分类
-        $cates = $this->cateRepository->getCatesByModelId($model_id = 2);
+        $cates = $this->cateRepository->getCatesByModel($model = 2);
 
         // 确定第一页的cate_id
         $cate_id = is_null($cate_id) ? $cates[0]->id : $cate_id;
@@ -74,7 +74,7 @@ class ArticleController extends Controller
         $atlas = $this->imageRepository->findAtlasAndTags($image = $article->images);
 
         // 拿到所有文章列表的分类
-        $cates = $this->cateRepository->getCatesByModelId($model_id = 2);
+        $cates = $this->cateRepository->getCatesByModel($model_id = 2);
 
         return view('admin.editArticle', compact('article', 'atlas', 'article_id', 'cates'));
     }
