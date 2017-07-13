@@ -269,7 +269,7 @@
                                     <div class="atlas-single">
                                         <img class="atlas-img" src="{{ $item->url }}" alt="图集子图">
                                         <input type="text" name="atlas[]" value="{{ $item->url }}" class="hidden">
-                                        <input class="atlas-tag form-control" type="text" name="tags[]" value="{{ $item->tags->name }}">
+                                        <input class="atlas-tag form-control" type="text" name="ImageTags[]" value="{{ $item->tags->name }}">
                                     </div>
                                 @endforeach
                             </div>

@@ -93,7 +93,7 @@ class ImageRepository
 
         $this->insertImages($data, $model_id, $model_type);
 
-        if (! empty($atlas['atlas'])) $this->addAtlas($atlas['atlas'], $atlas['tags'], $model_id, $model_type);
+        if (! empty($atlas['atlas'])) $this->addAtlas($atlas['atlas'], $atlas['ImageTags'], $model_id, $model_type);
     }
 
     /**
