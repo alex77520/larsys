@@ -7,9 +7,13 @@ use App\Article;
 class ArticleRepository
 {
 
-    public function getArticlesByCateId($cate_id, $page = 10)
+    public function getArticlesByCateId($cate_id, $page = '')
     {
-        $articles = Article::where('cate_id', $cate_id)->orderBy('taxis', 'desc')->paginate($page);
+        if ($page !== '') {
+            $articles = Article::where('cate_id', $cate_id)->orderBy('taxis', 'desc')->paginate($page);
+        } else {
+            $articles = Article::where('cate_id', $cate_id)->orderBy('taxis', 'desc')->get();
+        }
 
         return $articles;
     }

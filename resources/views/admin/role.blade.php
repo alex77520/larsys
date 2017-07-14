@@ -58,9 +58,10 @@
             function open(role, res) {
                 layer.open({
                     type: 1,
-                    offset: '100px',
+                    offset: '50px',
                     title: '配置权限',
-                    area: '200px',
+                    area: ['240px', '500px'],
+                    move: false,
                     skin: 'layui-layer-rim', //加上边框
                     btn: ['提交'],
                     yes: function() {

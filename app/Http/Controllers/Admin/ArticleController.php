@@ -41,7 +41,7 @@ class ArticleController extends Controller
         // 确定第一页的cate_id
         $cate_id = is_null($cate_id) ? $cates[0]->id : $cate_id;
 
-        $articles = $this->articleRepository->getArticlesByCateId($cate_id);
+        $articles = $this->articleRepository->getArticlesByCateId($cate_id, $page = 10);
 
         return view('admin.article', compact('cates', 'articles', 'cate_id'));
     }

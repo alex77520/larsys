@@ -6,6 +6,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <a href="{{ asset('/admin/cate/add') }}" class="btn btn-sm btn-success">添加栏目</a>
+                    <a href="{{ asset('/admin/static/cates') }}" class="btn btn-sm btn-primary">全部生成静态页</a>
                 </div>
                 <div class="panel-body">
                     <table class="table table-striped table-hover">
@@ -18,6 +19,7 @@
                             <th>创建时间</th>
                             <th>操作</th>
                             <th>排序</th>
+                            <th>静态</th>
                         </tr>
                         @foreach($cates as $cate)
                             <tr>
@@ -32,6 +34,7 @@
                                     <a type="button" class="btn-xs btn-danger" href="{{ url('/admin/cate/'. $cate->id .'/del') }}">删除</a>
                                 </td>
                                 <td>{{ $cate->taxis }}</td>
+                                <td><a type="button" class="btn-xs btn-info" href="{{ url('/admin/static/cate/'. $cate->id) }}">静态页生成</a></td>
                             </tr>
                         @endforeach
                     </table>

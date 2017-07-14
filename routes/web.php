@@ -70,6 +70,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('/image/{type?}', 'ImageController@index');
         Route::get('/image/{model_id}/edit', 'ImageController@edit');
         Route::get('/image/{image_id}/del', 'ImageController@del');
+
+        // 静态页
+        Route::get('/static/article/{article_id}', 'StaticPageController@singleArticlePageCreate'); // 单个文章详情
+        Route::get('/static/cate/{cate_id}', 'StaticPageController@catePageCreate'); // 栏目页面生成
+        Route::get('/static/cates', 'StaticPageController@allCatePageCreate'); // 批量生成栏目静态页
+        Route::get('/static/articles/{cate_id}', 'StaticPageController@allArticlePageCreate'); // 批量生成文章静态页
     });
 
     // Article
@@ -106,5 +112,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::post('/cate/doEdit/{cate_id}', 'CateController@doEdit');
 
 });
+
+    // 前台路由
+    Route::get('/article/{article_id}', 'ArticleController@show');
+    Route::get('/articles/{cate_id}', 'ArticleController@index');
+
+    Route::get('/page/{cate_id}', 'PageController@index');
+
+    Route::get('/goods/{goods_id}', 'GoodsController@show');
+    Route::get('/goods/list/{cate_id}', 'GoodsController@index');
 
 

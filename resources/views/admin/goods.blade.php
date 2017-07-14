@@ -6,7 +6,7 @@
             <div class="list-group col-sm-2">
                 @foreach($cates as $cate)
                     <a href="{{ url('/admin/goods/' . $cate->id) }}"
-                       class="list-group-item {{ $cate->id == $cate_id ? 'active' : ''}}">
+                       class="text-center list-group-item {{ $cate->id == $cate_id ? 'active' : ''}}">
                         {{ $cate->name }}
                     </a>
                 @endforeach
