@@ -10,8 +10,16 @@ use DB;
 
 class PermissionRepository
 {
+
+    /**
+     * @var CacheRepository
+     */
     protected $cacheRepository;
 
+    /**
+     * PermissionRepository constructor.
+     * @param CacheRepository $cacheRepository
+     */
     public function __construct(CacheRepository $cacheRepository)
     {
         $this->cacheRepository = $cacheRepository;

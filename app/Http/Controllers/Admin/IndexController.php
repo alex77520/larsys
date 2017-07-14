@@ -9,20 +9,25 @@ use Illuminate\Support\Facades\Storage;
 
 class IndexController extends Controller
 {
-    protected $permission;
-    protected $log;
 
-    public function __construct(PermissionRepository $permissionRepository,
-                                AdminLogRepository $adminLogRepository)
+    /**
+     * @var AdminLogRepository
+     */
+    protected $adminLogRepository;
+
+    /**
+     * IndexController constructor.
+     * @param AdminLogRepository $adminLogRepository
+     */
+    public function __construct(AdminLogRepository $adminLogRepository)
     {
-        $this->permission = $permissionRepository;
-        $this->log = $adminLogRepository;
+        $this->adminLogRepository = $adminLogRepository;
     }
 
     public function index()
     {
         // 删除过期的日志
-        $this->log->delOverdueLog();
+        $this->adminLogRepository->delOverdueLog();
 
         return view('admin.index');
     }
@@ -34,7 +39,7 @@ class IndexController extends Controller
      */
     public function log()
     {
-        $logs = $this->log->getAllLogs(10);
+        $logs = $this->adminLogRepository->getAllLogs(10);
 
         return view('admin/log', compact('logs'));
     }

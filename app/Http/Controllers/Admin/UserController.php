@@ -10,10 +10,26 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
+
+    /**
+     * @var UserRepository
+     */
     protected $userRepository;
+    /**
+     * @var CacheRepository
+     */
     protected $cacheRepository;
+    /**
+     * @var RoleRepository
+     */
     protected $roleRepository;
 
+    /**
+     * UserController constructor.
+     * @param UserRepository $userRepository
+     * @param CacheRepository $cacheRepository
+     * @param RoleRepository $roleRepository
+     */
     public function __construct(UserRepository $userRepository,
                                 CacheRepository $cacheRepository,
                                 RoleRepository $roleRepository)

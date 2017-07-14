@@ -9,8 +9,14 @@ use App\Http\Controllers\Controller;
 
 class CateController extends Controller
 {
-    
+
+    /**
+     * @var CateRepository
+     */
     protected $cateRepository;
+    /**
+     * @var ImageRepository
+     */
     protected $imageRepository;
 
     /**

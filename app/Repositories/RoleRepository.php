@@ -8,11 +8,19 @@ use DB;
 
 class RoleRepository
 {
-    protected $cache;
 
+    /**
+     * @var CacheRepository
+     */
+    protected $cacheReposiyory;
+
+    /**
+     * RoleRepository constructor.
+     * @param CacheRepository $cacheRepository
+     */
     public function __construct(CacheRepository $cacheRepository)
     {
-        $this->cache = $cacheRepository;
+        $this->cacheReposiyory = $cacheRepository;
     }
 
     /**
@@ -57,7 +65,7 @@ class RoleRepository
     public function destroyRoleBy($role_id)
     {
         // 删除全部缓存，使其重新生成
-        $this->cache->removeAllCache();
+        $this->cacheReposiyory->removeAllCache();
 
         // 将关联表中和该角色相关的关联记录删除
         $this->delUserRoleRelationsBy($role_id);
@@ -118,7 +126,7 @@ class RoleRepository
     {
         $this->delRolePermissionRelationsBy($role->id);
 
-        $this->cache->removeAllCache();
+        $this->cacheReposiyory->removeAllCache();
 
         $role->permissions()->attach($permissions_request);
     }

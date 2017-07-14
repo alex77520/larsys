@@ -8,11 +8,24 @@ use App\ImageTag;
 class ImageRepository
 {
 
+    /**
+     * 通过image_id删除图片
+     *
+     * @param $image_id
+     * @return int
+     */
     public function delImageBy($image_id)
     {
         return Image::destroy($image_id);
     }
 
+    /**
+     * 通过图片type获取图片
+     *
+     * @param $page
+     * @param null $type
+     * @return mixed
+     */
     public function getImagesByType($page, $type = null)
     {
         if (is_null($type)) {
@@ -24,17 +37,31 @@ class ImageRepository
         return $images;
     }
 
+    /**
+     * 创建新的图片
+     *
+     * @param $data
+     * @return mixed
+     */
     public function createImage($data)
     {
         return Image::create($data);
     }
 
+    /**
+     * 为图片添加新的标签
+     *
+     * @param $data
+     * @return mixed
+     */
     public function createTags($data)
     {
         return ImageTag::create($data);
     }
 
     /**
+     * 获取图集和图集的标签
+     *
      * @param $images
      * @param int $type
      * @return array
@@ -54,6 +81,13 @@ class ImageRepository
         return $atlas;
     }
 
+    /**
+     * 批量添加图片
+     *
+     * @param $data
+     * @param $model_id
+     * @param $model_type
+     */
     public function insertImages($data, $model_id, $model_type)
     {
         foreach ($data as $key => $value) {

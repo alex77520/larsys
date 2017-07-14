@@ -8,16 +8,28 @@ use App\Http\Controllers\Controller;
 
 class UploadController extends Controller
 {
-    protected $upload;
 
+    /**
+     * @var UploadRepository
+     */
+    protected $uploadRepository;
+
+    /**
+     * UploadController constructor.
+     * @param UploadRepository $uploadRepository
+     */
     public function __construct(UploadRepository $uploadRepository)
     {
-        $this->upload = $uploadRepository;
+        $this->uploadRepository = $uploadRepository;
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function uploadImg(Request $request)
     {
-        if ($file = $this->upload->uploadImg($request)) {
+        if ($file = $this->uploadRepository->uploadImg($request)) {
 
             return response()->json(['msg' => '/storage/' . $file]);
         };
@@ -25,9 +37,13 @@ class UploadController extends Controller
         return response()->json(['msg' => '上传失败']);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function uploadFile(Request $request)
     {
-        if ($file = $this->upload->uploadFile($request)) {
+        if ($file = $this->uploadRepository->uploadFile($request)) {
 
             return response()->json(['msg' => '/storage/' . $file]);
         };

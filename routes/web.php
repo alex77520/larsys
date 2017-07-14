@@ -73,9 +73,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
 
         // 静态页
         Route::get('/static/article/{article_id}', 'StaticPageController@singleArticlePageCreate'); // 单个文章详情
-        Route::get('/static/cate/{cate_id}', 'StaticPageController@catePageCreate'); // 栏目页面生成
-        Route::get('/static/cates', 'StaticPageController@allCatePageCreate'); // 批量生成栏目静态页
-        Route::get('/static/articles/{cate_id}', 'StaticPageController@allArticlePageCreate'); // 批量生成文章静态页
+        Route::get('/static/cate/{cate_id}', 'StaticPageController@catePageCreate');                // 栏目页面生成
+        Route::get('/static/cates', 'StaticPageController@allCatePageCreate');                      // 批量生成栏目静态页
+        Route::get('/static/articles/{cate_id}', 'StaticPageController@allArticlePageCreate');      // 批量生成文章静态页
     });
 
     // Article

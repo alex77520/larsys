@@ -9,13 +9,25 @@ use App\Http\Controllers\Controller;
 
 class PermissionController extends Controller
 {
-    protected $permissionRepository;
-    protected $cache;
 
+    /**
+     * @var PermissionRepository
+     */
+    protected $permissionRepository;
+    /**
+     * @var CacheRepository
+     */
+    protected $cacheRepository;
+
+    /**
+     * PermissionController constructor.
+     * @param PermissionRepository $permissionRepository
+     * @param CacheRepository $cacheRepository
+     */
     public function __construct(PermissionRepository $permissionRepository, CacheRepository $cacheRepository)
     {
         $this->permissionRepository = $permissionRepository;
-        $this->cache = $cacheRepository;
+        $this->cacheRepository = $cacheRepository;
     }
 
     /**
@@ -106,7 +118,7 @@ class PermissionController extends Controller
         $permission->taxis = $request->input('taxis');
         $permission->is_menu = $request->input('is_menu') == 1 ? $request->input('is_menu') : 0;
 
-        if ($permission->save($request->all())) $this->cache->removeAllCache();
+        if ($permission->save($request->all())) $this->cacheRepository->removeAllCache();
 
         flash('编辑权限成功！')->success();
 

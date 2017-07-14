@@ -8,8 +8,15 @@ use Illuminate\Support\Facades\DB;
 class UserRepository
 {
 
+    /**
+     * @var CacheRepository
+     */
     protected $cacheRepository;
 
+    /**
+     * UserRepository constructor.
+     * @param CacheRepository $cacheRepository
+     */
     public function __construct(CacheRepository $cacheRepository)
     {
         $this->cacheRepository = $cacheRepository;

@@ -27,6 +27,9 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'admin_user_role', 'user_id', 'role_id')->withTimestamps();

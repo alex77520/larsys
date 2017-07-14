@@ -18,6 +18,11 @@ class GoodsController extends Controller
      */
     private $goodsRepository;
 
+    /**
+     * GoodsController constructor.
+     * @param CateRepository $cateRepository
+     * @param GoodsRepository $goodsRepository
+     */
     public function __construct(CateRepository $cateRepository,
                                 GoodsRepository $goodsRepository)
     {
@@ -26,6 +31,10 @@ class GoodsController extends Controller
         $this->goodsRepository = $goodsRepository;
     }
 
+    /**
+     * @param null $cate_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index($cate_id = null)
     {
         // 拿到产品页列表

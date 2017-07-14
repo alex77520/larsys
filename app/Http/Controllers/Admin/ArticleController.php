@@ -24,6 +24,12 @@ class ArticleController extends Controller
      */
     private $imageRepository;
 
+    /**
+     * ArticleController constructor.
+     * @param CateRepository $cateRepository
+     * @param ArticleRepository $articleRepository
+     * @param ImageRepository $imageRepository
+     */
     public function __construct(CateRepository $cateRepository,
                                 ArticleRepository $articleRepository,
                                 ImageRepository $imageRepository)
@@ -33,6 +39,10 @@ class ArticleController extends Controller
         $this->imageRepository = $imageRepository;
     }
 
+    /**
+     * @param null $cate_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index($cate_id = null)
     {
         // 拿到所有文章列表的分类
@@ -46,11 +56,20 @@ class ArticleController extends Controller
         return view('admin.article', compact('cates', 'articles', 'cate_id'));
     }
 
+    /**
+     * @param $cate_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function add($cate_id)
     {
         return view('admin.addArticle', compact('cate_id'));
     }
 
+    /**
+     * @param ArticleRequest $request
+     * @param $cate_id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function doAdd(ArticleRequest $request, $cate_id)
     {
         $data = $request->except(['_token', 'icon', 'banner', 'atlas', 'ImageTags']);
@@ -68,6 +87,10 @@ class ArticleController extends Controller
 
     }
 
+    /**
+     * @param $article_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit($article_id)
     {
         $article = $this->articleRepository->findArticleWithImages($article_id);
@@ -79,6 +102,11 @@ class ArticleController extends Controller
         return view('admin.editArticle', compact('article', 'atlas', 'article_id', 'cates'));
     }
 
+    /**
+     * @param ArticleRequest $request
+     * @param $article_id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function doEdit(ArticleRequest $request, $article_id)
     {
         $data = $request->except(['icon', 'banner', '_token', 'atlas', 'ImageTags']);
@@ -96,6 +124,10 @@ class ArticleController extends Controller
         return redirect('/admin/article/' . $data['cate_id']);
     }
 
+    /**
+     * @param $article_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function del($article_id)
     {
         if ($this->articleRepository->delArticleBy($article_id))

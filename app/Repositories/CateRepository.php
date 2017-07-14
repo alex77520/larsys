@@ -11,6 +11,12 @@ class CateRepository
     const ARTICLE = 2;
     const SHOP = 3;
 
+    /**
+     * 根据cate_id为栏目生成url
+     *
+     * @param $cate_id
+     * @return mixed|string
+     */
     public function createUrlByCateId($cate_id)
     {
         $cateOnlyModel = Cate::select('model')->find($cate_id);
@@ -28,6 +34,12 @@ class CateRepository
         return $url;
     }
 
+    /**
+     * 根据model获取栏目
+     *
+     * @param $model
+     * @return mixed
+     */
     public function getCatesByModel($model)
     {
         $cates = Cate::where('model', $model)->orderBy('taxis')->get();
@@ -35,6 +47,12 @@ class CateRepository
         return $cates;
     }
 
+    /**
+     * 获取栏目对应的文章Id
+     *
+     * @param $cate_id
+     * @return mixed
+     */
     public function getCateArticlesBy($cate_id)
     {
         $articles = Cate::find($cate_id)->articles()->select('id')->get();
@@ -43,6 +61,8 @@ class CateRepository
     }
 
     /**
+     * 获取所有栏目
+     *
      * @return array
      */
     public function getAllCates()
@@ -55,6 +75,8 @@ class CateRepository
     }
 
     /**
+     * 创建新的栏目
+     *
      * @param $data
      * @return mixed
      */
@@ -64,6 +86,8 @@ class CateRepository
     }
 
     /**
+     * 通过cate_id删除对应的栏目
+     *
      * @param $cate_id
      * @return int
      */
@@ -73,6 +97,8 @@ class CateRepository
     }
 
     /**
+     * 更新栏目
+     *
      * @param $cate_id
      * @param $data
      * @return mixed
@@ -83,6 +109,9 @@ class CateRepository
     }
 
     /**
+     * 找到栏目对应的图片以及对应的标签
+     * 目前主要用于获取图集信息
+     *
      * @param $images
      * @param int $type
      * @return array
@@ -104,6 +133,8 @@ class CateRepository
     }
 
     /**
+     * 获取栏目并带有栏目图片
+     *
      * @param $cate_id
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
      */
