@@ -24,7 +24,7 @@ class PermissionController extends Controller
      * @param PermissionRepository $permissionRepository
      * @param CacheRepository $cacheRepository
      */
-    public function __construct(PermissionRepository $permissionRepository, CacheRepository $cacheRepository)
+    public function __construct( PermissionRepository $permissionRepository, CacheRepository $cacheRepository )
     {
         $this->permissionRepository = $permissionRepository;
         $this->cacheRepository = $cacheRepository;
@@ -37,9 +37,9 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = $this->permissionRepository->getAllPermissions($page = 20);
+        $permissions = $this->permissionRepository->getAllPermissions( $page = 20 );
 
-        return view('admin.permission', compact('permissions'));
+        return view( 'admin.permission', compact( 'permissions' ) );
     }
 
     /**
@@ -49,11 +49,11 @@ class PermissionController extends Controller
      */
     public function add()
     {
-        $permissions = $this->permissionRepository->getAllPermissions($page = 0);
+        $permissions = $this->permissionRepository->getAllPermissions( $page = 0 );
 
-        $options = setDropDownMenu($permissions);
+        $options = setDropDownMenu( $permissions );
 
-        return view('admin.addPermission', compact('options'));
+        return view( 'admin.addPermission', compact( 'options' ) );
     }
 
     /**
@@ -62,15 +62,15 @@ class PermissionController extends Controller
      * @param $permission_id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($permission_id)
+    public function edit( $permission_id )
     {
-        $permissions = $this->permissionRepository->getAllPermissions($page = 0);
+        $permissions = $this->permissionRepository->getAllPermissions( $page = 0 );
 
-        $permission = $this->permissionRepository->findPermission($permission_id);
+        $permission = $this->permissionRepository->findPermission( $permission_id );
 
-        $options = setDropDownMenu($permissions);
+        $options = setDropDownMenu( $permissions );
 
-        return view('admin.editPermission', compact('permission', 'options'));
+        return view( 'admin.editPermission', compact( 'permission', 'options' ) );
     }
 
     /**
@@ -79,12 +79,13 @@ class PermissionController extends Controller
      * @param $permission_id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function del($permission_id)
+    public function del( $permission_id )
     {
-        if ($this->permissionRepository->destroyPermissionBy($permission_id))
-            flash('删除权限成功！')->success();
+        if ( $this->permissionRepository->destroyPermissionBy( $permission_id ) ) {
+            flash( '删除权限成功！' )->success();
+        }
 
-        return redirect('/admin/permission');
+        return redirect( '/admin/permission' );
     }
 
     /**
@@ -93,12 +94,13 @@ class PermissionController extends Controller
      * @param AdminPermissionRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function doAdd(AdminPermissionRequest $request)
+    public function doAdd( AdminPermissionRequest $request )
     {
-        if ($this->permissionRepository->createPermission($request->all()))
-            flash('添加权限成功！')->success();
+        if ( $this->permissionRepository->createPermission( $request->all() ) ) {
+            flash( '添加权限成功！' )->success();
+        }
 
-        return redirect('/admin/permission');
+        return redirect( '/admin/permission' );
     }
 
     /**
@@ -108,21 +110,23 @@ class PermissionController extends Controller
      * @param $permission_id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function doEdit(AdminPermissionRequest $request, $permission_id)
+    public function doEdit( AdminPermissionRequest $request, $permission_id )
     {
-        $permission = $this->permissionRepository->findPermission($permission_id);
+        $permission = $this->permissionRepository->findPermission( $permission_id );
 
-        $permission->name = $request->input('name');
-        $permission->uri = $request->input('uri');
-        $permission->pid = $request->input('pid');
-        $permission->taxis = $request->input('taxis');
-        $permission->is_menu = $request->input('is_menu') == 1 ? $request->input('is_menu') : 0;
+        $permission->name = $request->input( 'name' );
+        $permission->uri = $request->input( 'uri' );
+        $permission->pid = $request->input( 'pid' );
+        $permission->taxis = $request->input( 'taxis' );
+        $permission->is_menu = $request->input( 'is_menu' ) == 1 ? $request->input( 'is_menu' ) : 0;
 
-        if ($permission->save($request->all())) $this->cacheRepository->removeAllCache();
+        if ( $permission->save( $request->all() ) ) {
+            $this->cacheRepository->removeAllCache();
+        }
 
-        flash('编辑权限成功！')->success();
+        flash( '编辑权限成功！' )->success();
 
-        return redirect('/admin/permission');
+        return redirect( '/admin/permission' );
     }
 
 }

@@ -8,6 +8,7 @@ use Auth;
 
 class AdminLogRepository
 {
+
     /**
      * 写入日志到数据库
      *
@@ -15,15 +16,15 @@ class AdminLogRepository
      */
     public function putLogInDatabase()
     {
-        $data['username'] = Auth::guard('admin')->user()->name;
-        $data['uri'] = pregReplaceUri($_SERVER['REQUEST_URI']);
+        $data['username'] = Auth::guard( 'admin' )->user()->name;
+        $data['uri'] = pregReplaceUri( $_SERVER['REQUEST_URI'] );
         $data['ip'] = getClientIP();
-        $data['expired_at'] = Carbon::parse('+3 day')->toDateTimeString();
+        $data['expired_at'] = Carbon::parse( '+3 day' )->toDateTimeString();
 
         $log = new AdminLog();
-        $data['name'] = $log->getNameByUri($data['uri']);
+        $data['name'] = $log->getNameByUri( $data['uri'] );
 
-        return $log->create($data);
+        return $log->create( $data );
     }
 
     /**
@@ -33,11 +34,11 @@ class AdminLogRepository
     {
         $now = Carbon::now()->toDateTimeString();
 
-        AdminLog::where('expired_at', '<', $now)->delete();
+        AdminLog::where( 'expired_at', '<', $now )->delete();
     }
 
-    public function getAllLogs($page)
+    public function getAllLogs( $page )
     {
-        return AdminLog::orderBy('created_at', 'desc')->paginate($page);
+        return AdminLog::orderBy( 'created_at', 'desc' )->paginate( $page );
     }
 }

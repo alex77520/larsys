@@ -13,10 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware( 'auth:api' )->get( '/user', function ( Request $request ) {
     return $request->user();
-});
+} );
 
 // 上传图片
-Route::post('/admin/uploadImg', 'Admin\UploadController@uploadImg');
-Route::post('/admin/uploadFile', 'Admin\UploadController@uploadFile');
+Route::post( '/admin/uploadImg', 'Admin\UploadController@uploadImg' );
+Route::post( '/admin/uploadFile', 'Admin\UploadController@uploadFile' );

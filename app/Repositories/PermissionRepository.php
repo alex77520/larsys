@@ -20,7 +20,7 @@ class PermissionRepository
      * PermissionRepository constructor.
      * @param CacheRepository $cacheRepository
      */
-    public function __construct(CacheRepository $cacheRepository)
+    public function __construct( CacheRepository $cacheRepository )
     {
         $this->cacheRepository = $cacheRepository;
     }
@@ -30,14 +30,15 @@ class PermissionRepository
      */
     public function initMenus()
     {
-        $user = Auth::guard('admin')->user();
+        $user = Auth::guard( 'admin' )->user();
 
         // 缓存中保存菜单和uris的键名
         $menu_name = 'menus_' . $user->id;
         $uri_name = 'uris_' . $user->id;
 
-        if (! $this->cacheRepository->hashFieldExist(env('REDIS_ADMIN_HASH_KEY'), $menu_name))
-            $this->cacheAllMenusOrPartMenus($user, $menu_name, $uri_name);
+        if ( ! $this->cacheRepository->hashFieldExist( env( 'REDIS_ADMIN_HASH_KEY' ), $menu_name ) ) {
+            $this->cacheAllMenusOrPartMenus( $user, $menu_name, $uri_name );
+        }
     }
 
     /**
@@ -46,9 +47,9 @@ class PermissionRepository
      * @param $permission_id
      * @return mixed
      */
-    public function findPermission($permission_id)
+    public function findPermission( $permission_id )
     {
-        return Permission::where('status', 1)->find($permission_id);
+        return Permission::where( 'status', 1 )->find( $permission_id );
     }
 
     /**
@@ -57,11 +58,11 @@ class PermissionRepository
      * @param $data
      * @return mixed
      */
-    public function createPermission($data)
+    public function createPermission( $data )
     {
         $this->cacheRepository->removeAllCache();
 
-        return Permission::create($data);
+        return Permission::create( $data );
     }
 
     /**
@@ -70,13 +71,13 @@ class PermissionRepository
      * @param $permission_id
      * @return int
      */
-    public function destroyPermissionBy($permission_id)
+    public function destroyPermissionBy( $permission_id )
     {
-        $this->delRolePermissionRelationsBy($permission_id);
+        $this->delRolePermissionRelationsBy( $permission_id );
 
         $this->cacheRepository->removeAllCache();
 
-        return Permission::destroy($permission_id);
+        return Permission::destroy( $permission_id );
     }
 
     /**
@@ -89,21 +90,21 @@ class PermissionRepository
      * @param $menu_name
      * @param $uri_name
      */
-    public function cacheAllMenusOrPartMenus($user, $menu_name, $uri_name)
+    public function cacheAllMenusOrPartMenus( $user, $menu_name, $uri_name )
     {
-        if ($user->is_admin === 1) {
+        if ( $user->is_admin === 1 ) {
             $admin_menus = $this->getAllMenus();
             $admin_uris = $this->getAllUris();
         } else {
-            $admin_menus = $this->getPermissionMenus($user);
-            $admin_uris = $this->getPermissionUris($user);
+            $admin_menus = $this->getPermissionMenus( $user );
+            $admin_uris = $this->getPermissionUris( $user );
         }
 
         // buildTree->App/Helpers/helpers.php
-        $admin_menus = buildTree($admin_menus);
+        $admin_menus = buildTree( $admin_menus );
 
-        $this->cacheRepository->hashSet(env('REDIS_ADMIN_HASH_KEY'), $menu_name, serialize($admin_menus));
-        $this->cacheRepository->hashSet(env('REDIS_ADMIN_HASH_KEY'), $uri_name, serialize($admin_uris));
+        $this->cacheRepository->hashSet( env( 'REDIS_ADMIN_HASH_KEY' ), $menu_name, serialize( $admin_menus ) );
+        $this->cacheRepository->hashSet( env( 'REDIS_ADMIN_HASH_KEY' ), $uri_name, serialize( $admin_uris ) );
     }
 
     /**
@@ -115,9 +116,9 @@ class PermissionRepository
      */
     public function getAllMenus()
     {
-        $admin_menus = Permission::where('is_menu', 1)
-            ->select('id', 'pid', 'name', 'uri')
-            ->orderBy('taxis')
+        $admin_menus = Permission::where( 'is_menu', 1 )
+            ->select( 'id', 'pid', 'name', 'uri' )
+            ->orderBy( 'taxis' )
             ->get()
             ->toArray();
 
@@ -131,14 +132,14 @@ class PermissionRepository
      */
     public function getAllUris()
     {
-        $admin_permissions = Permission::where('uri', '!=', '')
-            ->select('uri')
+        $admin_permissions = Permission::where( 'uri', '!=', '' )
+            ->select( 'uri' )
             ->get()
             ->toArray();
 
         // 确保与getPermissionUris方法返回的数据格式一致
         $fresh_permissions = [];
-        foreach($admin_permissions as $permission) {
+        foreach ( $admin_permissions as $permission ) {
             $fresh_permissions[] = $permission['uri'];
         }
 
@@ -150,9 +151,9 @@ class PermissionRepository
      *
      * @param $permission_id
      */
-    public function delRolePermissionRelationsBy($permission_id)
+    public function delRolePermissionRelationsBy( $permission_id )
     {
-        DB::table('admin_role_permission')->where('permission_id', '=', $permission_id)->delete();
+        DB::table( 'admin_role_permission' )->where( 'permission_id', '=', $permission_id )->delete();
     }
 
     /**
@@ -163,28 +164,30 @@ class PermissionRepository
      * @param $user
      * @return array
      */
-    public function getPermissionMenus($user)
+    public function getPermissionMenus( $user )
     {
-        $user_roles = $this->findRolesBy($user->id);
+        $user_roles = $this->findRolesBy( $user->id );
 
         $user_permissions = [];
 
-        foreach ($user_roles as $role) {
+        foreach ( $user_roles as $role ) {
 
-            $role_permissions = $this->findPermissionsBy($role['id']);
+            $role_permissions = $this->findPermissionsBy( $role['id'] );
 
-            foreach ($role_permissions as $permission) {
+            foreach ( $role_permissions as $permission ) {
                 // （关键）把pivot关联数组信息去除，
                 // 原因是该项的存在使得数组的每个键值都变得唯一而达不到去重目的
-                unset($permission['pivot']);
+                unset( $permission['pivot'] );
 
-                if (in_array($permission, $user_permissions)) continue;
+                if ( in_array( $permission, $user_permissions ) ) {
+                    continue;
+                }
 
-                array_push($user_permissions, $permission);
+                array_push( $user_permissions, $permission );
             }
         }
 
-        return  $user_permissions;
+        return $user_permissions;
     }
 
     /**
@@ -193,19 +196,21 @@ class PermissionRepository
      * @param $user
      * @return array
      */
-    public function getPermissionUris($user)
+    public function getPermissionUris( $user )
     {
-        $roles = $this->findRolesBy($user->id);
+        $roles = $this->findRolesBy( $user->id );
 
         $permission_uris = [];
 
-        foreach ($roles as $role) {
+        foreach ( $roles as $role ) {
 
-            $permissions = $this->findPermissionsBy($role['id'], false);
+            $permissions = $this->findPermissionsBy( $role['id'], false );
 
-            foreach ($permissions as $permission) {
+            foreach ( $permissions as $permission ) {
 
-                if (in_array($permission['uri'], $permission_uris) || $permission['uri'] == '') continue;
+                if ( in_array( $permission['uri'], $permission_uris ) || $permission['uri'] == '' ) {
+                    continue;
+                }
 
                 $permission_uris[] = $permission['uri'];
             }
@@ -220,9 +225,9 @@ class PermissionRepository
      * @param $user_id
      * @return mixed
      */
-    public function findRolesBy($user_id)
+    public function findRolesBy( $user_id )
     {
-        return $user_roles = Admin::find($user_id)->roles()->get()->toArray();
+        return $user_roles = Admin::find( $user_id )->roles()->get()->toArray();
     }
 
     /**
@@ -232,12 +237,12 @@ class PermissionRepository
      * @param bool $is_menu
      * @return mixed
      */
-    public function findPermissionsBy($role_id, $is_menu = true)
+    public function findPermissionsBy( $role_id, $is_menu = true )
     {
-        if ($is_menu === true) {
-            $role_permissions = Role::find($role_id)->permissions()->where('is_menu', 1)->get()->toArray();
+        if ( $is_menu === true ) {
+            $role_permissions = Role::find( $role_id )->permissions()->where( 'is_menu', 1 )->get()->toArray();
         } else {
-            $role_permissions = Role::find($role_id)->permissions()->get()->toArray();
+            $role_permissions = Role::find( $role_id )->permissions()->get()->toArray();
         }
 
         return $role_permissions;
@@ -252,18 +257,18 @@ class PermissionRepository
      * @param bool $returnArray
      * @return mixed
      */
-    public function getAllPermissions($page = 5, $returnArray = false)
+    public function getAllPermissions( $page = 5, $returnArray = false )
     {
-        if ($page === 0) {
-            if ($returnArray === false) {
-                return $permissions = Permission::where('status', 1)->orderBy('taxis')->get();
+        if ( $page === 0 ) {
+            if ( $returnArray === false ) {
+                return $permissions = Permission::where( 'status', 1 )->orderBy( 'taxis' )->get();
             } else {
-                return $permissions = Permission::where('status', 1)->orderBy('taxis')->get()->toArray();
+                return $permissions = Permission::where( 'status', 1 )->orderBy( 'taxis' )->get()->toArray();
             }
         }
 
-        if ($returnArray === false) {
-            return $permissions = Permission::where('status', 1)->orderBy('taxis')->paginate($page);
+        if ( $returnArray === false ) {
+            return $permissions = Permission::where( 'status', 1 )->orderBy( 'taxis' )->paginate( $page );
         }
     }
 }

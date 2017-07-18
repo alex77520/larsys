@@ -18,7 +18,7 @@ class RoleRepository
      * RoleRepository constructor.
      * @param CacheRepository $cacheRepository
      */
-    public function __construct(CacheRepository $cacheRepository)
+    public function __construct( CacheRepository $cacheRepository )
     {
         $this->cacheReposiyory = $cacheRepository;
     }
@@ -29,9 +29,9 @@ class RoleRepository
      * @param $role_id
      * @return int
      */
-    public function delUserRoleRelationsBy($role_id)
+    public function delUserRoleRelationsBy( $role_id )
     {
-        return DB::table('admin_user_role')->where('role_id', '=', $role_id)->delete();
+        return DB::table( 'admin_user_role' )->where( 'role_id', '=', $role_id )->delete();
     }
 
     /**
@@ -40,9 +40,9 @@ class RoleRepository
      * @param $role_id
      * @return int
      */
-    public function delRolePermissionRelationsBy($role_id)
+    public function delRolePermissionRelationsBy( $role_id )
     {
-        return DB::table('admin_role_permission')->where('role_id', '=', $role_id)->delete();
+        return DB::table( 'admin_role_permission' )->where( 'role_id', '=', $role_id )->delete();
     }
 
     /**
@@ -51,9 +51,9 @@ class RoleRepository
      * @param $role_id
      * @return mixed
      */
-    public function findRoleBy($role_id)
+    public function findRoleBy( $role_id )
     {
-        return Role::find($role_id);
+        return Role::find( $role_id );
     }
 
     /**
@@ -62,16 +62,16 @@ class RoleRepository
      * @param $role_id
      * @return int
      */
-    public function destroyRoleBy($role_id)
+    public function destroyRoleBy( $role_id )
     {
         // 删除全部缓存，使其重新生成
         $this->cacheReposiyory->removeAllCache();
 
         // 将关联表中和该角色相关的关联记录删除
-        $this->delUserRoleRelationsBy($role_id);
-        $this->delRolePermissionRelationsBy($role_id);
+        $this->delUserRoleRelationsBy( $role_id );
+        $this->delRolePermissionRelationsBy( $role_id );
 
-        return Role::destroy($role_id);
+        return Role::destroy( $role_id );
     }
 
     /**
@@ -80,9 +80,9 @@ class RoleRepository
      * @param array $data
      * @return mixed
      */
-    public function createRole(array $data)
+    public function createRole( array $data )
     {
-        return Role::create($data);
+        return Role::create( $data );
     }
 
     /**
@@ -91,9 +91,9 @@ class RoleRepository
      * @param $page
      * @return mixed
      */
-    public function getAllRoles($page)
+    public function getAllRoles( $page )
     {
-        return $roles = Role::orderBy('created_at')->paginate($page);
+        return $roles = Role::orderBy( 'created_at' )->paginate( $page );
     }
 
     /**
@@ -102,14 +102,14 @@ class RoleRepository
      * @param $role_id
      * @return array
      */
-    public function getRolePermissionsIdBy($role_id)
+    public function getRolePermissionsIdBy( $role_id )
     {
-        $role = Role::with(['permissions' => function($query) {
-            return $query->select('permission_id');
-        }])->find($role_id);
+        $role = Role::with( [ 'permissions' => function ( $query ) {
+            return $query->select( 'permission_id' );
+        } ] )->find( $role_id );
 
         $permissions_id = [];
-        foreach ($role->permissions as $permission) {
+        foreach ( $role->permissions as $permission ) {
             $permissions_id[] = $permission->permission_id;
         }
 
@@ -122,13 +122,13 @@ class RoleRepository
      * @param $role
      * @param $permissions_request
      */
-    public function allotPermissions($role, $permissions_request)
+    public function allotPermissions( $role, $permissions_request )
     {
-        $this->delRolePermissionRelationsBy($role->id);
+        $this->delRolePermissionRelationsBy( $role->id );
 
         $this->cacheReposiyory->removeAllCache();
 
-        $role->permissions()->attach($permissions_request);
+        $role->permissions()->attach( $permissions_request );
     }
 
     /**
@@ -137,14 +137,16 @@ class RoleRepository
      * @param $checked_permissions
      * @return mixed
      */
-    public function setCheckedPermissionData($checked_permissions)
+    public function setCheckedPermissionData( $checked_permissions )
     {
-        $all_permissions = Permission::select('id', 'name', 'pid')->get();
+        $all_permissions = Permission::select( 'id', 'name', 'pid' )->get();
 
-        foreach ($all_permissions as $key => $permission) {
+        foreach ( $all_permissions as $key => $permission ) {
             $all_permissions[$key]['pId'] = $permission['pid'];
-            unset($all_permissions[$key]['pid']);
-            if (in_array($permission['id'], $checked_permissions)) $all_permissions[$key]['checked'] = true;
+            unset( $all_permissions[$key]['pid'] );
+            if ( in_array( $permission['id'], $checked_permissions ) ) {
+                $all_permissions[$key]['checked'] = true;
+            }
         }
 
         return $all_permissions;
@@ -157,6 +159,6 @@ class RoleRepository
      */
     public function getAllRolesIdAndName()
     {
-        return $roles = Role::select('id', 'name')->where('name', '!=', '超级管理员')->get();
+        return $roles = Role::select( 'id', 'name' )->where( 'name', '!=', '超级管理员' )->get();
     }
 }

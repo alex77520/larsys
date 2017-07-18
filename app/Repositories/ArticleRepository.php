@@ -14,12 +14,12 @@ class ArticleRepository
      * @param string $page
      * @return mixed
      */
-    public function getArticlesByCateId($cate_id, $page = '')
+    public function getArticlesByCateId( $cate_id, $page = '' )
     {
-        if ($page !== '') {
-            $articles = Article::where('cate_id', $cate_id)->orderBy('taxis', 'desc')->paginate($page);
+        if ( $page !== '' ) {
+            $articles = Article::where( 'cate_id', $cate_id )->orderBy( 'taxis', 'desc' )->paginate( $page );
         } else {
-            $articles = Article::where('cate_id', $cate_id)->orderBy('taxis', 'desc')->get();
+            $articles = Article::where( 'cate_id', $cate_id )->orderBy( 'taxis', 'desc' )->get();
         }
 
         return $articles;
@@ -31,9 +31,9 @@ class ArticleRepository
      * @param $data
      * @return mixed
      */
-    public function createArticle($data)
+    public function createArticle( $data )
     {
-        return Article::create($data);
+        return Article::create( $data );
     }
 
     /**
@@ -42,9 +42,9 @@ class ArticleRepository
      * @param $article_id
      * @return int
      */
-    public function delArticleBy($article_id)
+    public function delArticleBy( $article_id )
     {
-        return Article::destroy($article_id);
+        return Article::destroy( $article_id );
     }
 
     /**
@@ -53,11 +53,11 @@ class ArticleRepository
      * @param $article_id
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
      */
-    public function findArticleWithImages($article_id)
+    public function findArticleWithImages( $article_id )
     {
-        return Article::with(['images' => function($query) {
-            return $query->orderBy('type', 'asc');
-        }])->find($article_id);
+        return Article::with( [ 'images' => function ( $query ) {
+            return $query->orderBy( 'type', 'asc' );
+        } ] )->find( $article_id );
     }
 
     /**
@@ -67,8 +67,8 @@ class ArticleRepository
      * @param $data
      * @return mixed
      */
-    public function updateArticle($article_id, $data)
+    public function updateArticle( $article_id, $data )
     {
-        return Article::where('id', $article_id)->update($data);
+        return Article::where( 'id', $article_id )->update( $data );
     }
 }

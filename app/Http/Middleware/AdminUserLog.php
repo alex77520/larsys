@@ -7,9 +7,10 @@ use App\Repositories\AdminLogRepository;
 
 class AdminUserLog
 {
+
     protected $log;
 
-    public function __construct(AdminLogRepository $adminLogRepository)
+    public function __construct( AdminLogRepository $adminLogRepository )
     {
         $this->log = $adminLogRepository;
     }
@@ -17,15 +18,17 @@ class AdminUserLog
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle( $request, Closure $next )
     {
 
-        if (! $this->log->putLogInDatabase()) return '权限写入失败！';
+        if ( ! $this->log->putLogInDatabase() ) {
+            return '权限写入失败！';
+        }
 
-        return $next($request);
+        return $next( $request );
     }
 }

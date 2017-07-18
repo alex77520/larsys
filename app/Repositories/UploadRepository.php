@@ -11,21 +11,21 @@ class UploadRepository
      * @param Request $request
      * @return false|string
      */
-    public function uploadImg(Request $request)
+    public function uploadImg( Request $request )
     {
-        $type = $request->input('type');
+        $type = $request->input( 'type' );
 
-        return $file = $request->file('uploadImg')->store('images/' . $type, 'public');
+        return $file = $request->file( 'uploadImg' )->store( 'images/' . $type, 'public' );
     }
 
     /**
      * @param Request $request
      * @return false|string
      */
-    public function uploadFile(Request $request)
+    public function uploadFile( Request $request )
     {
-        $type = $request->input('type');
+        $type = $request->input( 'type' );
 
-        return $file = $request->file('uploadFile')->store('files/' . $type, 'public');
+        return $file = $request->file( 'uploadFile' )->store( 'files/' . $type, 'public' );
     }
 }

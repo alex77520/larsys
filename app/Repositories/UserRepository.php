@@ -17,7 +17,7 @@ class UserRepository
      * UserRepository constructor.
      * @param CacheRepository $cacheRepository
      */
-    public function __construct(CacheRepository $cacheRepository)
+    public function __construct( CacheRepository $cacheRepository )
     {
         $this->cacheRepository = $cacheRepository;
     }
@@ -28,10 +28,10 @@ class UserRepository
      * @param $user_id
      * @return mixed
      */
-    public function delUserRoleRelationsBy($user_id)
+    public function delUserRoleRelationsBy( $user_id )
     {
-        return DB::table('admin_user_role')
-            ->where('user_id', '=', $user_id)
+        return DB::table( 'admin_user_role' )
+            ->where( 'user_id', '=', $user_id )
             ->delete();
     }
 
@@ -41,9 +41,9 @@ class UserRepository
      * @param $user_id
      * @return mixed
      */
-    public function findUserBy($user_id)
+    public function findUserBy( $user_id )
     {
-        return $user = Admin::find($user_id);
+        return $user = Admin::find( $user_id );
     }
 
     /**
@@ -52,11 +52,11 @@ class UserRepository
      * @param int $page
      * @return mixed
      */
-    public function getAllUsersWithRoleName($page = 5)
+    public function getAllUsersWithRoleName( $page = 5 )
     {
-        $users = Admin::orderBy('created_at')->with(['roles' => function ($query) {
-            return $query->select('name');
-        }])->paginate($page);
+        $users = Admin::orderBy( 'created_at' )->with( [ 'roles' => function ( $query ) {
+            return $query->select( 'name' );
+        } ] )->paginate( $page );
 
         return $users;
     }
@@ -67,10 +67,10 @@ class UserRepository
      * @param $user
      * @return array
      */
-    public function getUserRolesIdBy($user)
+    public function getUserRolesIdBy( $user )
     {
         $user_roles_id = [];
-        foreach ($user->roles as $role) {
+        foreach ( $user->roles as $role ) {
             $user_roles_id[] = $role->role_id;
         }
 
@@ -83,11 +83,11 @@ class UserRepository
      * @param $user_id
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null|static|static[]
      */
-    public function findUserWithRoleIdAndName($user_id)
+    public function findUserWithRoleIdAndName( $user_id )
     {
-        return $user = Admin::with(['roles' => function ($query) {
-            return $query->select('role_id', 'name');
-        }])->find($user_id);
+        return $user = Admin::with( [ 'roles' => function ( $query ) {
+            return $query->select( 'role_id', 'name' );
+        } ] )->find( $user_id );
     }
 
     /**
@@ -96,9 +96,9 @@ class UserRepository
      * @param $data
      * @return mixed
      */
-    public function createUser($data)
+    public function createUser( $data )
     {
-        return $user = Admin::create($data);
+        return $user = Admin::create( $data );
     }
 
     /**
@@ -107,12 +107,12 @@ class UserRepository
      * @param $user
      * @param $roles
      */
-    public function allotRolesFor($user, $roles)
+    public function allotRolesFor( $user, $roles )
     {
-        $this->delUserRoleRelationsBy($user->id);
+        $this->delUserRoleRelationsBy( $user->id );
 
-        $user->roles()->attach($roles);
+        $user->roles()->attach( $roles );
 
-        $this->cacheRepository->removeCacheBy($user->id);
+        $this->cacheRepository->removeCacheBy( $user->id );
     }
 }

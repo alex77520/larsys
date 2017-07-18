@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+
     use Notifiable;
 
     /**
@@ -32,6 +33,6 @@ class User extends Authenticatable
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'admin_user_role', 'user_id', 'role_id')->withTimestamps();
+        return $this->belongsToMany( Role::class, 'admin_user_role', 'user_id', 'role_id' )->withTimestamps();
     }
 }

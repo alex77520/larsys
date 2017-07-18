@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
+
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -37,7 +38,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest.admin', ['except' => 'logout']);
+        $this->middleware( 'guest.admin', [ 'except' => 'logout' ] );
     }
 
     /**
@@ -45,7 +46,7 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        return view('admin.login');
+        return view( 'admin.login' );
     }
 
     /**
@@ -53,7 +54,7 @@ class LoginController extends Controller
      */
     protected function guard()
     {
-        return auth()->guard('admin');
+        return auth()->guard( 'admin' );
     }
 
     /**
@@ -67,10 +68,10 @@ class LoginController extends Controller
     /**
      * 验证该用户是否被锁
      *
-     * @param  mixed  $user
+     * @param  mixed $user
      * @return mixed
      */
-    protected function authenticated($user)
+    protected function authenticated( $user )
     {
         return $user->status === 1 ? true : false;
     }
@@ -78,23 +79,24 @@ class LoginController extends Controller
     /**
      * 重写登录返回信息
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    protected function sendLoginResponse(Request $request)
+    protected function sendLoginResponse( Request $request )
     {
         $request->session()->regenerate();
 
-        $this->clearLoginAttempts($request);
+        $this->clearLoginAttempts( $request );
 
-        if ($this->authenticated($this->guard()->user()) === false) {
+        if ( $this->authenticated( $this->guard()->user() ) === false ) {
             // 若用户被锁，则将该用户的会话信息删除，阻止用户登录
-            $request->session()->forget($this->guard()->getName());
+            $request->session()->forget( $this->guard()->getName() );
 
-            flash('您的账号已被冻结')->error();
-            return view('admin.login');
+            flash( '您的账号已被冻结' )->error();
+
+            return view( 'admin.login' );
         }
 
-        return redirect()->intended($this->redirectPath());
+        return redirect()->intended( $this->redirectPath() );
     }
 }

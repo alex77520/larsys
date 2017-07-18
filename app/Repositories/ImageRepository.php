@@ -14,9 +14,9 @@ class ImageRepository
      * @param $image_id
      * @return int
      */
-    public function delImageBy($image_id)
+    public function delImageBy( $image_id )
     {
-        return Image::destroy($image_id);
+        return Image::destroy( $image_id );
     }
 
     /**
@@ -26,12 +26,12 @@ class ImageRepository
      * @param null $type
      * @return mixed
      */
-    public function getImagesByType($page, $type = null)
+    public function getImagesByType( $page, $type = null )
     {
-        if (is_null($type)) {
-            $images = Image::orderBy('created_at', 'desc')->paginate($page);
+        if ( is_null( $type ) ) {
+            $images = Image::orderBy( 'created_at', 'desc' )->paginate( $page );
         } else {
-            $images = Image::orderBy('created_at', 'desc')->where('type', $type)->paginate($page);
+            $images = Image::orderBy( 'created_at', 'desc' )->where( 'type', $type )->paginate( $page );
         }
 
         return $images;
@@ -43,9 +43,9 @@ class ImageRepository
      * @param $data
      * @return mixed
      */
-    public function createImage($data)
+    public function createImage( $data )
     {
-        return Image::create($data);
+        return Image::create( $data );
     }
 
     /**
@@ -54,9 +54,9 @@ class ImageRepository
      * @param $data
      * @return mixed
      */
-    public function createTags($data)
+    public function createTags( $data )
     {
-        return ImageTag::create($data);
+        return ImageTag::create( $data );
     }
 
     /**
@@ -66,15 +66,13 @@ class ImageRepository
      * @param int $type
      * @return array
      */
-    public function findAtlasAndTags($images, $type = 2)
+    public function findAtlasAndTags( $images, $type = 2 )
     {
         $atlas = [];
 
-        foreach ($images as $image)
-        {
-            if ($image->type == $type)
-            {
-                $atlas[] = $this->findAtlasWithTagBy($image->id);
+        foreach ( $images as $image ) {
+            if ( $image->type == $type ) {
+                $atlas[] = $this->findAtlasWithTagBy( $image->id );
             }
         }
 
@@ -88,46 +86,48 @@ class ImageRepository
      * @param $model_id
      * @param $model_type
      */
-    public function insertImages($data, $model_id, $model_type)
+    public function insertImages( $data, $model_id, $model_type )
     {
-        foreach ($data as $key => $value) {
+        foreach ( $data as $key => $value ) {
 
-            if ((! is_null($value)) && ($value !== '')) {
+            if ( ( ! is_null( $value ) ) && ( $value !== '' ) ) {
 
-                $arr['type'] = $this->judgeImage($key);
+                $arr['type'] = $this->judgeImage( $key );
                 $arr['url'] = $value;
                 $arr['model_id'] = $model_id;
                 $arr['model_type'] = $model_type;
 
-                $this->createImage($arr);
+                $this->createImage( $arr );
             }
         }
     }
 
-    public function addAtlas($atlas, $tags, $model_id, $model_type)
+    public function addAtlas( $atlas, $tags, $model_id, $model_type )
     {
-        foreach ($atlas as $key => $item) {
+        foreach ( $atlas as $key => $item ) {
             // 先插入图片
             $arr['type'] = 2;
             $arr['url'] = $item;
             $arr['model_id'] = $model_id;
             $arr['model_type'] = $model_type;
-            $image = $this->createImage($arr);
+            $image = $this->createImage( $arr );
 
             // 再给到标签
             $tag['image_id'] = $image->id;
             $tag['name'] = $tags[$key];
-            $this->createTags($tag);
+            $this->createTags( $tag );
         }
     }
 
-    public function updateImagesByCateId($data, $atlas, $model_id, $model_type)
+    public function updateImagesByCateId( $data, $atlas, $model_id, $model_type )
     {
-        $this->delImagesBy($model_id);
+        $this->delImagesBy( $model_id );
 
-        $this->insertImages($data, $model_id, $model_type);
+        $this->insertImages( $data, $model_id, $model_type );
 
-        if (! empty($atlas['atlas'])) $this->addAtlas($atlas['atlas'], $atlas['ImageTags'], $model_id, $model_type);
+        if ( ! empty( $atlas['atlas'] ) ) {
+            $this->addAtlas( $atlas['atlas'], $atlas['ImageTags'], $model_id, $model_type );
+        }
     }
 
     /**
@@ -135,43 +135,43 @@ class ImageRepository
      * @param $model_type
      * @param $model_id
      */
-    public function createImagesWithModelAndRequest($request, $model_type, $model_id)
+    public function createImagesWithModelAndRequest( $request, $model_type, $model_id )
     {
-        $images = $request->only(['icon', 'banner']);
+        $images = $request->only( [ 'icon', 'banner' ] );
 
-        $this->insertImages($images, $model_id, $model_type);
+        $this->insertImages( $images, $model_id, $model_type );
 
-        $atlas = $request->only(['atlas', 'ImageTags']);
+        $atlas = $request->only( [ 'atlas', 'ImageTags' ] );
 
-        if (! empty($atlas['atlas'])) {
+        if ( ! empty( $atlas['atlas'] ) ) {
 
-            $this->addAtlas($atlas['atlas'], $atlas['ImageTags'], $model_id, $model_type);
+            $this->addAtlas( $atlas['atlas'], $atlas['ImageTags'], $model_id, $model_type );
 
         }
     }
 
-    public function updateImagesWithModelAndRequest($request, $model_type, $model_id)
+    public function updateImagesWithModelAndRequest( $request, $model_type, $model_id )
     {
-        $images = $request->only(['icon', 'banner']);
+        $images = $request->only( [ 'icon', 'banner' ] );
 
-        $atlas = $request->only(['atlas', 'ImageTags']);
+        $atlas = $request->only( [ 'atlas', 'ImageTags' ] );
 
-        $this->updateImagesByCateId($images, $atlas, $model_id, $model_type);
+        $this->updateImagesByCateId( $images, $atlas, $model_id, $model_type );
     }
 
-    public function delImagesBy($model_id)
+    public function delImagesBy( $model_id )
     {
-        return Image::where('model_id', $model_id)->delete();
+        return Image::where( 'model_id', $model_id )->delete();
     }
 
-    public function findAtlasWithTagBy($image_id)
+    public function findAtlasWithTagBy( $image_id )
     {
-        return Image::with(['tags'])->where('id', $image_id)->first();
+        return Image::with( [ 'tags' ] )->where( 'id', $image_id )->first();
     }
 
-    public function judgeImage($key)
+    public function judgeImage( $key )
     {
-        switch ($key) {
+        switch ( $key ) {
             case 'icon':
                 $type = 0;
                 break;

@@ -30,9 +30,9 @@ class UserController extends Controller
      * @param CacheRepository $cacheRepository
      * @param RoleRepository $roleRepository
      */
-    public function __construct(UserRepository $userRepository,
-                                CacheRepository $cacheRepository,
-                                RoleRepository $roleRepository)
+    public function __construct( UserRepository $userRepository,
+                                 CacheRepository $cacheRepository,
+                                 RoleRepository $roleRepository )
     {
         $this->userRepository = $userRepository;
         $this->cacheRepository = $cacheRepository;
@@ -46,9 +46,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->userRepository->getAllUsersWithRoleName($page = 5);
+        $users = $this->userRepository->getAllUsersWithRoleName( $page = 5 );
 
-        return view('admin.user', compact('users'));
+        return view( 'admin.user', compact( 'users' ) );
     }
 
     /**
@@ -60,7 +60,7 @@ class UserController extends Controller
     {
         $roles = $this->roleRepository->getAllRolesIdAndName();
 
-        return view('admin.addUser', compact('roles'));
+        return view( 'admin.addUser', compact( 'roles' ) );
     }
 
     /**
@@ -69,21 +69,20 @@ class UserController extends Controller
      * @param AdminUserRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function doAdd(AdminUserRequest $request)
+    public function doAdd( AdminUserRequest $request )
     {
-        $data = $request->except('roles');
-        $data['password'] = bcrypt($request->input('password'));
+        $data = $request->except( 'roles' );
+        $data['password'] = bcrypt( $request->input( 'password' ) );
 
-        $user = $this->userRepository->createUser($data);
+        $user = $this->userRepository->createUser( $data );
 
-        if ((!$request->exists('is_admin')) && ($request->exists('roles')))
-        {
-            $roles = $request->input('roles');
+        if ( ( ! $request->exists( 'is_admin' ) ) && ( $request->exists( 'roles' ) ) ) {
+            $roles = $request->input( 'roles' );
 
-            $this->userRepository->allotRolesFor($user, $roles);
+            $this->userRepository->allotRolesFor( $user, $roles );
         }
 
-        return redirect('/admin/user');
+        return redirect( '/admin/user' );
     }
 
     /**
@@ -92,15 +91,15 @@ class UserController extends Controller
      * @param $user_id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($user_id)
+    public function edit( $user_id )
     {
-        $user = $this->userRepository->findUserWithRoleIdAndName($user_id);
+        $user = $this->userRepository->findUserWithRoleIdAndName( $user_id );
 
         $roles = $this->userRepository->getAllRolesIdAndName();
 
-        $user_roles_id = $this->userRepository->getUserRolesIdBy($user);
+        $user_roles_id = $this->userRepository->getUserRolesIdBy( $user );
 
-        return view('admin.editUser', compact('user', 'roles', 'user_roles_id'));
+        return view( 'admin.editUser', compact( 'user', 'roles', 'user_roles_id' ) );
     }
 
     /**
@@ -110,24 +109,23 @@ class UserController extends Controller
      * @param $user_id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function doEdit(AdminUserRequest $request, $user_id)
+    public function doEdit( AdminUserRequest $request, $user_id )
     {
-        $user = $this->userRepository->findUserBy($user_id);
+        $user = $this->userRepository->findUserBy( $user_id );
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = bcrypt($request->input('password'));
-        $user->is_admin = $request->exists('is_admin') ? $request->input('is_admin') : 0;
+        $user->name = $request->input( 'name' );
+        $user->email = $request->input( 'email' );
+        $user->password = bcrypt( $request->input( 'password' ) );
+        $user->is_admin = $request->exists( 'is_admin' ) ? $request->input( 'is_admin' ) : 0;
         $user->save();
 
-        if ((! $request->exists('is_admin')) && ($request->exists('roles')))
-        {
-            $roles = $request->input('roles');
+        if ( ( ! $request->exists( 'is_admin' ) ) && ( $request->exists( 'roles' ) ) ) {
+            $roles = $request->input( 'roles' );
 
-            $this->userRepository->allotRolesFor($user, $roles);
+            $this->userRepository->allotRolesFor( $user, $roles );
         }
 
-        return redirect('/admin/user');
+        return redirect( '/admin/user' );
     }
 
     /**
@@ -136,21 +134,20 @@ class UserController extends Controller
      * @param $user_id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function del($user_id)
+    public function del( $user_id )
     {
-        $user = $this->userRepository->findUserBy($user_id);
+        $user = $this->userRepository->findUserBy( $user_id );
 
-        if ($user->delete())
-        {
-            flash('删除用户成功！')->success();
+        if ( $user->delete() ) {
+            flash( '删除用户成功！' )->success();
 
-            $this->userRepository->delUserRoleRelationsBy($user_id);
+            $this->userRepository->delUserRoleRelationsBy( $user_id );
 
             // 仅删除该用户对应的缓存
-            $this->cacheRepository->removeCacheBy($user_id);
+            $this->cacheRepository->removeCacheBy( $user_id );
         }
 
-        return redirect('/admin/user');
+        return redirect( '/admin/user' );
     }
 
     /**
@@ -159,12 +156,14 @@ class UserController extends Controller
      * @param $user_id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function frozen($user_id)
+    public function frozen( $user_id )
     {
-        $user = $this->userRepository->findUserBy($user_id);
+        $user = $this->userRepository->findUserBy( $user_id );
         $user->status = 0;
 
-        if ($user->save()) return redirect('/admin/user');
+        if ( $user->save() ) {
+            return redirect( '/admin/user' );
+        }
     }
 
     /**
@@ -173,11 +172,13 @@ class UserController extends Controller
      * @param $user_id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function unfrozen($user_id)
+    public function unfrozen( $user_id )
     {
-        $user = $this->userRepository->findUserBy($user_id);
+        $user = $this->userRepository->findUserBy( $user_id );
         $user->status = 1;
 
-        if ($user->save()) return redirect('/admin/user');
+        if ( $user->save() ) {
+            return redirect( '/admin/user' );
+        }
     }
 }

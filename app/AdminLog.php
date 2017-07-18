@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdminLog extends Model
 {
+
     protected $table = 'admin_log';
 
     protected $primaryKey = 'id';
@@ -14,9 +15,9 @@ class AdminLog extends Model
         'name', 'uri', 'ip', 'username', 'expired_at'
     ];
 
-    public function getNameByUri($uri)
+    public function getNameByUri( $uri )
     {
-        $permission_name = Permission::where('uri', '=', $uri)->select('name')->first();
+        $permission_name = Permission::where( 'uri', '=', $uri )->select( 'name' )->first();
 
         return $permission_name->name;
     }

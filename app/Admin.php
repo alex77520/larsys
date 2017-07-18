@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Admin extends Authenticatable
 {
+
     use Notifiable;
 
     protected $table = 'admin_users';
@@ -25,14 +26,14 @@ class Admin extends Authenticatable
      *
      * @var array
      */
-    
+
     protected $hidden = [
         'password', 'remember_token',
     ];
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'admin_user_role', 'user_id', 'role_id')->withTimestamps();
+        return $this->belongsToMany( Role::class, 'admin_user_role', 'user_id', 'role_id' )->withTimestamps();
     }
-    
+
 }

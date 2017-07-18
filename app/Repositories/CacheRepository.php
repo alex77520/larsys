@@ -6,12 +6,13 @@ use Illuminate\Support\Facades\Redis;
 
 class CacheRepository
 {
+
     /**
      * 删除所有权限菜单和权限URI缓存
      */
     public function removeAllCache()
     {
-        Redis::del(env('REDIS_ADMIN_HASH_KEY'));
+        Redis::del( env( 'REDIS_ADMIN_HASH_KEY' ) );
     }
 
     /**
@@ -19,9 +20,9 @@ class CacheRepository
      *
      * @param $user_id
      */
-    public function removeCacheBy($user_id)
+    public function removeCacheBy( $user_id )
     {
-        Redis::hdel(env('REDIS_ADMIN_HASH_KEY'), 'menus_' . $user_id, 'uris_' . $user_id);
+        Redis::hdel( env( 'REDIS_ADMIN_HASH_KEY' ), 'menus_' . $user_id, 'uris_' . $user_id );
     }
 
     /**
@@ -31,9 +32,9 @@ class CacheRepository
      * @param $field
      * @param $value
      */
-    public function hashSet($key, $field, $value)
+    public function hashSet( $key, $field, $value )
     {
-        Redis::hset($key, $field, $value);
+        Redis::hset( $key, $field, $value );
     }
 
     /**
@@ -43,9 +44,9 @@ class CacheRepository
      * @param $field
      * @return mixed
      */
-    public function hashGet($key, $field)
+    public function hashGet( $key, $field )
     {
-        return Redis::hget($key, $field);
+        return Redis::hget( $key, $field );
     }
 
     /**
@@ -55,9 +56,9 @@ class CacheRepository
      * @param $field
      * @return mixed
      */
-    public function hashFieldExist($key, $field)
+    public function hashFieldExist( $key, $field )
     {
-        return Redis::hexists($key, $field);
+        return Redis::hexists( $key, $field );
     }
 
     /**
@@ -66,8 +67,8 @@ class CacheRepository
      * @param $key
      * @return mixed
      */
-    public function keyExist($key)
+    public function keyExist( $key )
     {
-        return Redis::exists($key);
+        return Redis::exists( $key );
     }
 }

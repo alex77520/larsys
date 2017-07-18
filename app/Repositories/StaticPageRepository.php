@@ -12,7 +12,7 @@ class StaticPageRepository
      */
     private $cateRepository;
 
-    public function __construct(CateRepository $cateRepository)
+    public function __construct( CateRepository $cateRepository )
     {
 
         $this->cateRepository = $cateRepository;
@@ -26,9 +26,9 @@ class StaticPageRepository
      * @param string $id
      * @return bool
      */
-    public function create($page, $folder = '', $id = '')
+    public function create( $page, $folder = '', $id = '' )
     {
-        return $file = Storage::disk('public')->put('logs/'. $folder .'/'. $id .'.html', $page);
+        return $file = Storage::disk( 'public' )->put( 'logs/' . $folder . '/' . $id . '.html', $page );
     }
 
     /**
@@ -36,24 +36,25 @@ class StaticPageRepository
      *
      * @param $cate_id
      */
-    public function createSingleCatePage($cate_id)
+    public function createSingleCatePage( $cate_id )
     {
         // 获取当前栏目在前台的url
-        $url = $this->cateRepository->createUrlByCateId($cate_id);
+        $url = $this->cateRepository->createUrlByCateId( $cate_id );
 
         // 跳过无意义的url，防止批量生成时中断
-        if ($url !== 'javascript:void(0);') {
-            try
-            {
-                $page = file_get_contents($url);
+        if ( $url !== 'javascript:void(0);' ) {
+            try {
+                $page = file_get_contents( $url );
 
-            } catch (\Exception $e) {
+            } catch ( \Exception $e ) {
                 $code = $e->getCode();
 
-                if ($code === 0) abort(404);
+                if ( $code === 0 ) {
+                    abort( 404 );
+                }
             }
 
-            $this->create($page, $folder = 'categories', $filename = $cate_id);
+            $this->create( $page, $folder = 'categories', $filename = $cate_id );
         }
     }
 
@@ -64,30 +65,30 @@ class StaticPageRepository
     {
         $categories = $this->cateRepository->getAllCates();
 
-        foreach ($categories as $category) {
-            $this->createSingleCatePage($category['id']);
+        foreach ( $categories as $category ) {
+            $this->createSingleCatePage( $category['id'] );
         }
     }
-    
+
     /**
      * 生成单个文章静态页面
      *
      * @param $article_id
      */
-    public function createSingleArticlePage($article_id)
+    public function createSingleArticlePage( $article_id )
     {
-        try
-        {
+        try {
             // web.php => /article/{article_id}
-            $page = file_get_contents(url('/article/' . $article_id));
-        } catch (\Exception $e)
-        {
+            $page = file_get_contents( url( '/article/' . $article_id ) );
+        } catch ( \Exception $e ) {
             $code = $e->getCode();
 
-            if ($code === 0) abort(404);
+            if ( $code === 0 ) {
+                abort( 404 );
+            }
         }
 
-        $this->staticPageRepository->create($page, $folder = 'article', $filename = $article_id);
+        $this->staticPageRepository->create( $page, $folder = 'article', $filename = $article_id );
     }
 
     /**
@@ -95,13 +96,13 @@ class StaticPageRepository
      *
      * @param $cate_id
      */
-    public function batchArticlePageCreate($cate_id)
+    public function batchArticlePageCreate( $cate_id )
     {
-        $articles = $this->cateRepository->getCateArticlesBy($cate_id);
+        $articles = $this->cateRepository->getCateArticlesBy( $cate_id );
 
-        foreach ($articles as $article) {
+        foreach ( $articles as $article ) {
 
-            $this->createSingleArticlePage($article->id);
+            $this->createSingleArticlePage( $article->id );
         }
     }
 }

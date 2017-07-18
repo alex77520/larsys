@@ -18,7 +18,7 @@ class UploadController extends Controller
      * UploadController constructor.
      * @param UploadRepository $uploadRepository
      */
-    public function __construct(UploadRepository $uploadRepository)
+    public function __construct( UploadRepository $uploadRepository )
     {
         $this->uploadRepository = $uploadRepository;
     }
@@ -27,27 +27,27 @@ class UploadController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function uploadImg(Request $request)
+    public function uploadImg( Request $request )
     {
-        if ($file = $this->uploadRepository->uploadImg($request)) {
+        if ( $file = $this->uploadRepository->uploadImg( $request ) ) {
 
-            return response()->json(['msg' => '/storage/' . $file]);
+            return response()->json( [ 'msg' => '/storage/' . $file ] );
         };
 
-        return response()->json(['msg' => '上传失败']);
+        return response()->json( [ 'msg' => '上传失败' ] );
     }
 
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function uploadFile(Request $request)
+    public function uploadFile( Request $request )
     {
-        if ($file = $this->uploadRepository->uploadFile($request)) {
+        if ( $file = $this->uploadRepository->uploadFile( $request ) ) {
 
-            return response()->json(['msg' => '/storage/' . $file]);
+            return response()->json( [ 'msg' => '/storage/' . $file ] );
         };
 
-        return response()->json(['msg' => '上传失败']);
+        return response()->json( [ 'msg' => '上传失败' ] );
     }
 }

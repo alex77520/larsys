@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\AdminLogRepository;
-use App\Repositories\PermissionRepository;
-use Illuminate\Support\Facades\Storage;
 
 class IndexController extends Controller
 {
@@ -19,7 +17,7 @@ class IndexController extends Controller
      * IndexController constructor.
      * @param AdminLogRepository $adminLogRepository
      */
-    public function __construct(AdminLogRepository $adminLogRepository)
+    public function __construct( AdminLogRepository $adminLogRepository )
     {
         $this->adminLogRepository = $adminLogRepository;
     }
@@ -29,7 +27,7 @@ class IndexController extends Controller
         // 删除过期的日志
         $this->adminLogRepository->delOverdueLog();
 
-        return view('admin.index');
+        return view( 'admin.index' );
     }
 
     /**
@@ -39,8 +37,8 @@ class IndexController extends Controller
      */
     public function log()
     {
-        $logs = $this->adminLogRepository->getAllLogs(10);
+        $logs = $this->adminLogRepository->getAllLogs( 10 );
 
-        return view('admin/log', compact('logs'));
+        return view( 'admin/log', compact( 'logs' ) );
     }
 }

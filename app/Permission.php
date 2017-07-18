@@ -11,11 +11,11 @@ class Permission extends Model
 
     protected $primaryKey = 'id';
 
-    protected $fillable = ['name', 'uri', 'status', 'is_menu', 'pid', 'taxis'];
+    protected $fillable = [ 'name', 'uri', 'status', 'is_menu', 'pid', 'taxis' ];
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'admin_role_permission', 'permission_id', 'role_id')->withTimestamps();
+        return $this->belongsToMany( Role::class, 'admin_role_permission', 'permission_id', 'role_id' )->withTimestamps();
     }
 
 }
