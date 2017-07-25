@@ -6,6 +6,7 @@ use App\Repositories\PermissionRepository;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CacheRepository;
+use Illuminate\Support\Facades\Cache;
 
 class AuthPermission
 {
@@ -35,8 +36,14 @@ class AuthPermission
 
         $uri = pregReplaceUri( $_SERVER['REQUEST_URI'] );
 
-        if ( ! in_array( $uri, unserialize( $this->cache->hashGet( env( 'REDIS_ADMIN_HASH_KEY' ), 'uris_' . $user_id ) ) ) ) {
-            return abort( '401' );
+        if ( env('REDIS_OPEN') === 'on') {
+            if ( ! in_array( $uri, unserialize( $this->cache->hashGet( env( 'REDIS_ADMIN_HASH_KEY' ), 'uris_' . $user_id ) ) ) ) {
+                return abort( '401' );
+            }
+        } else {
+            if ( ! in_array( $uri, unserialize( Cache::store('file')->get(env( 'REDIS_ADMIN_HASH_KEY' ) . '_uris_' . $user_id) ) ) ) {
+                return abort( '401' );
+            }
         }
 
         return $next( $request );

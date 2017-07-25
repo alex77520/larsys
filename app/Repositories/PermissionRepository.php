@@ -7,6 +7,7 @@ use App\Permission;
 use App\Role;
 use Auth;
 use DB;
+use Illuminate\Support\Facades\Cache;
 
 class PermissionRepository
 {
@@ -36,9 +37,20 @@ class PermissionRepository
         $menu_name = 'menus_' . $user->id;
         $uri_name = 'uris_' . $user->id;
 
-        if ( ! $this->cacheRepository->hashFieldExist( env( 'REDIS_ADMIN_HASH_KEY' ), $menu_name ) ) {
-            $this->cacheAllMenusOrPartMenus( $user, $menu_name, $uri_name );
+        if ( env('REDIS_OPEN') === 'on') {
+            if ( ! $this->cacheRepository->hashFieldExist( env( 'REDIS_ADMIN_HASH_KEY' ), $menu_name ) ) {
+                $this->cacheAllMenusOrPartMenus( $user, $menu_name, $uri_name );
+            }
+        } else {
+
+            $datas = $this->getAllMenusOrPartMenus( $user );
+            $admin_menus = $datas['menus'];
+            $admin_uris = $datas['uris'];
+
+            Cache::store('file')->forever( env( 'REDIS_ADMIN_HASH_KEY' ) . '_' . $menu_name, serialize($admin_menus));
+            Cache::store('file')->forever( env( 'REDIS_ADMIN_HASH_KEY' ) . '_' . $uri_name, serialize($admin_uris));
         }
+
     }
 
     /**
@@ -92,6 +104,22 @@ class PermissionRepository
      */
     public function cacheAllMenusOrPartMenus( $user, $menu_name, $uri_name )
     {
+        $datas = $this->getAllMenusOrPartMenus( $user );
+        $admin_menus = $datas['menus'];
+        $admin_uris = $datas['uris'];
+
+        $this->cacheRepository->hashSet( env( 'REDIS_ADMIN_HASH_KEY' ), $menu_name, serialize( $admin_menus ) );
+        $this->cacheRepository->hashSet( env( 'REDIS_ADMIN_HASH_KEY' ), $uri_name, serialize( $admin_uris ) );
+    }
+
+    /**
+     * 获取所有菜单以及uri或者部分菜单以及uri
+     *
+     * @param $user
+     * @return array
+     */
+    public function getAllMenusOrPartMenus( $user )
+    {
         if ( $user->is_admin === 1 ) {
             $admin_menus = $this->getAllMenus();
             $admin_uris = $this->getAllUris();
@@ -103,8 +131,10 @@ class PermissionRepository
         // buildTree->App/Helpers/helpers.php
         $admin_menus = buildTree( $admin_menus );
 
-        $this->cacheRepository->hashSet( env( 'REDIS_ADMIN_HASH_KEY' ), $menu_name, serialize( $admin_menus ) );
-        $this->cacheRepository->hashSet( env( 'REDIS_ADMIN_HASH_KEY' ), $uri_name, serialize( $admin_uris ) );
+        return $menus = [
+            'menus' => $admin_menus,
+            'uris' => $admin_uris
+        ];
     }
 
     /**

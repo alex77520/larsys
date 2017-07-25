@@ -172,6 +172,8 @@ return [
         Overtrue\LaravelUEditor\UEditorServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        App\Providers\TestServiceProvider::class,
+
         /*
          * Application Service Providers...
          */

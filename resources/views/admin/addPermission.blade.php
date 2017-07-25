@@ -61,7 +61,7 @@
                             <label for="taxis" class="col-sm-2 control-label">排序</label>
                             <div class="col-sm-8">
                                 <input name="taxis" type="text" class="form-control" id="taxis"
-                                       value="{{ old('taxis') ? old('taxis') : '' }}" placeholder="排序">
+                                       value="{{ old('taxis') ? old('taxis') : 0 }}" placeholder="排序">
                             </div>
                         </div>
                         <div class="form-group">

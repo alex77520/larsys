@@ -79,19 +79,35 @@
     <div class="container" style="margin-bottom: 10px;">
         <div class="row">
             <div class="dropdown btn-group">
-                @foreach(unserialize(\Illuminate\Support\Facades\Redis::hget(env('REDIS_ADMIN_HASH_KEY'), 'menus_' . Auth::guard('admin')->user()->id)) as $admin_menu)
-                <div class="btn-group" role="group">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{ $admin_menu['name'] }}
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        @foreach($admin_menu['sub_menu'] as $sub_menu)
-                            <li><a href="{{ $sub_menu['uri'] }}">{{ $sub_menu['name'] }}</a></li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endforeach
+                @if(env('REDIS_OPEN') === 'on')
+                    @foreach(unserialize(\Illuminate\Support\Facades\Redis::hget(env('REDIS_ADMIN_HASH_KEY'), 'menus_' . Auth::guard('admin')->user()->id)) as $admin_menu)
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{ $admin_menu['name'] }}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            @foreach($admin_menu['sub_menu'] as $sub_menu)
+                                <li><a href="{{ $sub_menu['uri'] }}">{{ $sub_menu['name'] }}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endforeach
+                @else
+                    @foreach(unserialize(\Illuminate\Support\Facades\Cache::store( 'file' )->get( env( 'REDIS_ADMIN_HASH_KEY' ) . '_menus_' . Auth::guard('admin')->user()->id)) as $admin_menu)
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{ $admin_menu['name'] }}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                @foreach($admin_menu['sub_menu'] as $sub_menu)
+                                    <li><a href="{{ $sub_menu['uri'] }}">{{ $sub_menu['name'] }}</a></li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>

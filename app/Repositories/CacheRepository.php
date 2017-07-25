@@ -12,7 +12,8 @@ class CacheRepository
      */
     public function removeAllCache()
     {
-        Redis::del( env( 'REDIS_ADMIN_HASH_KEY' ) );
+        if ( env('REDIS_OPEN') === 'on')
+            Redis::del( env( 'REDIS_ADMIN_HASH_KEY' ) );
     }
 
     /**
@@ -22,6 +23,7 @@ class CacheRepository
      */
     public function removeCacheBy( $user_id )
     {
+        if ( env('REDIS_OPEN') === 'on')
         Redis::hdel( env( 'REDIS_ADMIN_HASH_KEY' ), 'menus_' . $user_id, 'uris_' . $user_id );
     }
 
@@ -34,6 +36,7 @@ class CacheRepository
      */
     public function hashSet( $key, $field, $value )
     {
+        if ( env('REDIS_OPEN') === 'on')
         Redis::hset( $key, $field, $value );
     }
 
@@ -69,6 +72,7 @@ class CacheRepository
      */
     public function keyExist( $key )
     {
+        if ( env('REDIS_OPEN') === 'on')
         return Redis::exists( $key );
     }
 }

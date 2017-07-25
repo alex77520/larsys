@@ -37,6 +37,7 @@ class GoodsController extends Controller
      */
     public function index( $cate_id = null )
     {
+
         // 拿到产品页列表
         $cates = $this->cateRepository->getCatesByModel( $model = 3 );
 
